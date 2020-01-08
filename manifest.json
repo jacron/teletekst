@@ -5,8 +5,6 @@
   "author": "Jan H Croonen",
   "permissions": [
     "webRequest",
-    "chrome://favicon/",
-    "tabs",
     "<all_urls>"
   ],
   "background": {

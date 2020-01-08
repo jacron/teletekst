@@ -11,12 +11,10 @@ chrome.browserAction.onClicked.addListener(function(tab) {
         height: 700
     }, win => {
         console.log('win', win);
-        // win.title = 'Teletekst';
         chrome.tabs.executeScript(win.tabs[0].id, {
             file: 'scroll.js'
         }, () => {
 
         });
     });
-    // window.open(config.teletekstUrl, config.JCSpecs);
 });

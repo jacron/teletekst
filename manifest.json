@@ -3,8 +3,8 @@
   "description": "ipv popup",
   "version": "1.0",
   "author": "Jan H Croonen",
-  "permissions": [
-    "webRequest",
+  "optional_permissions": [
+    "activeTab",
     "<all_urls>"
   ],
   "background": {

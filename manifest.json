@@ -10,8 +10,13 @@
   "background": {
     "scripts": ["background.js"]
   },
+  "icons" : {
+    "128": "images/teletekst2 128.png",
+    "48": "images/teletekst2 48.png",
+    "16": "images/teletekst2 16.png"
+  },
   "browser_action": {
-    "default_icon": "images/icon.png",
+    "default_icon": "images/teletekst2 16.png",
     "default_title": "Teletekst"
   },
   "manifest_version": 2

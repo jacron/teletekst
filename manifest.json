@@ -3,7 +3,7 @@
   "description": "ipv popup",
   "version": "1.0",
   "author": "Jan H Croonen",
-  "optional_permissions": [
+  "permissions": [
     "activeTab",
     "<all_urls>"
   ],
@@ -19,5 +19,9 @@
     "default_icon": "images/teletekst2 16.png",
     "default_title": "Teletekst"
   },
+  "content_scripts": [{
+    "js": ["scroll.js"],
+    "matches": ["https://nos.nl/teletekst/*"]
+    }],
   "manifest_version": 2
 }

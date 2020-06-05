@@ -19,9 +19,9 @@
     "default_icon": "images/teletekst2 16.png",
     "default_title": "Teletekst"
   },
-  "content_scripts": [{
-    "js": ["scroll.js"],
-    "matches": ["https://nos.nl/teletekst/*"]
-    }],
+  "options_ui": {
+    "chrome_style": true,
+    "page": "options.html"
+  },
   "manifest_version": 2
 }

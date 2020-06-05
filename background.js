@@ -1,9 +1,10 @@
 const config = {
     /** load page 101, nieuwsoverzicht */
-    teletekstUrl: 'https://nos.nl/teletekst#101_01',
+    teletekstUrl: 'https://teletekst-data.nos.nl/webplus/?p=101-1',
 };
 
 let winId = null;
+let tabId = null;
 
 chrome.browserAction.onClicked.addListener(function() {
     if (winId === null) {
@@ -11,10 +12,12 @@ chrome.browserAction.onClicked.addListener(function() {
         chrome.windows.create({
             url: config.teletekstUrl,
             type: 'popup',
-            width: 600,
-            height: 600,
+            width: 540,
+            height: 630,
             top: 10
-        }, win => { });
+        }, win => {
+            tabId = win.tabs[0].id;
+        });
     } else {
         chrome.windows.update(winId, {
             focused: true
@@ -22,9 +25,19 @@ chrome.browserAction.onClicked.addListener(function() {
     }
 });
 
+chrome.tabs.onUpdated.addListener((id, info) => {
+    if (info.status && info.status === 'loading' && id === tabId) {
+            chrome.tabs.executeScript(tabId, {
+                file: 'scroll.js'
+            }, () => {
+            });
+    }
+});
+
 chrome.windows.onRemoved.addListener(windowId => {
     if (windowId === winId) {
         winId = null;
+        tabId = null;
         console.log('the popup closed');
     }
 });

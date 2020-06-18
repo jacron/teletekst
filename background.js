@@ -13,15 +13,17 @@ chrome.browserAction.onClicked.addListener(function() {
             url: config.teletekstUrl,
             type: 'popup',
             width: 540,
-            height: 630,
+            height: 600,
             top: 10
         }, win => {
             tabId = win.tabs[0].id;
+            winId = win.id;
         });
     } else {
-        chrome.windows.update(winId, {
-            focused: true
-        })
+        chrome.windows.remove(winId);
+        // chrome.windows.update(winId, {
+        //     focused: true
+        // })
     }
 });
 

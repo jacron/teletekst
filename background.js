@@ -1,46 +1,48 @@
-const config = {
+const createData = {
     /** load page 101, nieuwsoverzicht */
-    teletekstUrl: 'https://teletekst-data.nos.nl/webplus/?p=101-1',
+    url: 'https://teletekst-data.nos.nl/webplus/?p=101-1',
+    type: 'popup',
+    width: 540,
+    height: 625,
+    left: 10,
+    top: 40,
 };
+const activePopup = {
+    windId: null,
+    tabId: null
+}
 
-let winId = null;
-let tabId = null;
+function calcLeft() {
+    return screen.width / 2 - (540 / 2);
+}
 
 chrome.browserAction.onClicked.addListener(function() {
-    if (winId === null) {
-        /** prevent multiple popups */
-        chrome.windows.create({
-            url: config.teletekstUrl,
-            type: 'popup',
-            width: 540,
-            height: 600,
-            top: 10
-        }, win => {
-            tabId = win.tabs[0].id;
-            winId = win.id;
+    /** prevent multiple popups */
+    if (!activePopup.winId) {
+        createData.left = calcLeft();
+        chrome.windows.create(createData, win => {
+            activePopup.tabId = win.tabs[0].id;
+            activePopup.winId = win.id;
         });
     } else {
-        chrome.windows.remove(winId);
-        // chrome.windows.update(winId, {
-        //     focused: true
-        // })
+        chrome.windows.remove(activePopup.winId);
     }
 });
 
-chrome.tabs.onUpdated.addListener((id, info) => {
-    if (info.status && info.status === 'loading' && id === tabId) {
-            chrome.tabs.executeScript(tabId, {
+chrome.tabs.onUpdated.addListener((id, tabChangeInfo) => {
+    if (tabChangeInfo.status && tabChangeInfo.status === 'loading' &&
+        id === activePopup.tabId) {
+            chrome.tabs.executeScript(id, {
                 file: 'scroll.js'
-            }, () => {
-            });
+            }, () => {});
     }
 });
 
 chrome.windows.onRemoved.addListener(windowId => {
-    if (windowId === winId) {
-        winId = null;
-        tabId = null;
-        console.log('the popup closed');
+    if (windowId === activePopup.winId) {
+        activePopup.winId = null;
+        activePopup.tabId = null;
+        // console.log('the popup closed');
     }
 });
 

@@ -12,14 +12,14 @@ const activePopup = {
     tabId: null
 }
 
-function calcLeft() {
-    return screen.width / 2 - (540 / 2);
+function calcLeft(w) {
+    return screen.width / 2 - (w / 2);
 }
 
 chrome.browserAction.onClicked.addListener(function() {
     /** prevent multiple popups */
     if (!activePopup.winId) {
-        createData.left = calcLeft();
+        createData.left = calcLeft(createData.width);
         chrome.windows.create(createData, win => {
             activePopup.tabId = win.tabs[0].id;
             activePopup.winId = win.id;

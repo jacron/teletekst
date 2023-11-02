@@ -2,8 +2,8 @@ const createData = {
     /** load page 101, nieuwsoverzicht */
     url: 'https://teletekst-data.nos.nl/webplus/?p=101-1',
     type: 'popup',
-    width: 540,
-    height: 625,
+    width: 610,
+    height: 660,
     left: 10,
     top: 40,
 };
@@ -25,7 +25,7 @@ chrome.browserAction.onClicked.addListener(function() {
             activePopup.winId = win.id;
         });
     } else {
-        chrome.windows.remove(activePopup.winId);
+        chrome.windows.remove(activePopup.winId).then();
     }
 });
 

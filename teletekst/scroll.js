@@ -21,18 +21,23 @@ function hackLinks() {
         }
     }
 }
+
+function makeLink(span, url) {
+    const text = span.textContent;
+    if (text.indexOf(url) !== -1) {
+        const anchor = document.createElement('a');
+        anchor.textContent = text;
+        span.textContent = '';
+        anchor.href = 'https://' + url;
+        span.appendChild(anchor);
+    }
+}
+
 function weerplaza() {
     const spans = document.getElementsByTagName('span');
     for (let span of spans) {
-        const text = span.textContent;
-        if (text.indexOf('www.weerplaza.nl') !== -1) {
-            console.log('weerplaza found')
-            const anchor = document.createElement('a');
-            anchor.textContent = text;
-            span.textContent = '';
-            anchor.href = 'https://www.weerplaza.nl';
-            span.appendChild(anchor);
-        }
+        makeLink(span, 'www.weerplaza.nl');
+        makeLink(span, 'www.nos.nl')
     }
 }
 window.scrollTo(0, 60);

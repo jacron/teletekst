@@ -1,9 +1,44 @@
+const onderregelHtml = [
+    '<span class="red "><a id="fastText1Red" class="red" href="/webplus?p=102"> binnenland</a></span>',
+    '<span class="green "><a id="fastText2Green" class="green" href="/webplus?p=601">    sport  </a></span>',
+    '<span class="yellow "><a id="fastText3Yellow" class="yellow" href="/webplus?p=730"> verkeer  </a></span>',
+    '<span class="cyan "><a id="fastText4Blue" class="cyan" href="/webplus?p=702">  weer</a></span>  ',
+];
+
+function getPageFromHref() {
+    const href = document.location.href;
+    console.log(href)
+    const pos = href.indexOf('=');
+    return href.substring(pos + 1);
+}
+
+function setTitleNotFound() {
+    document.title = 'not found: ' + getPageFromHref() + document.title;
+}
+
+function appendOnderregel() {
+    const div = document.createElement('div');
+    div.innerHTML = onderregelHtml.join('');
+    document.getElementById('content').appendChild(div);
+}
+
 function setTitleWithTime() {
     const now = new Date();
     document.title = 'NOS Teletekst - ' +
         now.getHours() + ':' +
         now.getMinutes();
 }
+
+function changeTitle() {
+    console.log(document.title);
+    if (document.title === '- NOS Teletekst') {
+        setTitleNotFound();
+        appendOnderregel();
+    } else {
+        setTitleWithTime();
+    }
+}
+
 function hackLinks() {
     const hacks = [
         ['fastText1Red', ' nieuws ', 101],
@@ -16,8 +51,6 @@ function hackLinks() {
         if (link) {
             link.textContent = hack[1];
             link.href = '/webplus?p=' + hack[2];
-        } else {
-            console.log('unknown id', hack[0]);
         }
     }
 }
@@ -41,6 +74,6 @@ function weerplaza() {
     }
 }
 window.scrollTo(0, 60);
-setTitleWithTime();
+changeTitle();
 hackLinks();
 weerplaza();

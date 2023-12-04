@@ -66,14 +66,47 @@ function makeLink(span, url) {
     }
 }
 
-function weerplaza() {
+function makeLinks() {
     const spans = document.getElementsByTagName('span');
     for (let span of spans) {
         makeLink(span, 'www.weerplaza.nl');
         makeLink(span, 'www.nos.nl')
     }
 }
+
+function changeStyle() {
+    // Change background color to the value of immersive reader (Edge).
+    document.head.innerHTML += `
+    <style>
+        html, body {
+            background-color: #222;
+        }
+    </style>`;
+}
+
+function makeShortcuts() {
+    document.body.addEventListener('keydown', e => {
+        switch (e.key) {
+            case 'F1':
+                document.getElementById('fastText1Red').click();
+                break;
+            case 'F2':
+                document.getElementById('fastText2Green').click();
+                break;
+            case 'F3':
+                document.getElementById('fastText3Yellow').click();
+                break;
+            case 'F4':
+                document.getElementById('fastText4Blue').click();
+                break;
+        }
+    });
+}
+
 window.scrollTo(0, 60);
 changeTitle();
 hackLinks();
-weerplaza();
+makeLinks();
+changeStyle();
+makeShortcuts();
+

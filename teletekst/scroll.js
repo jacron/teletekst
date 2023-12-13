@@ -103,10 +103,10 @@ function makeShortcuts() {
     });
 }
 
-window.scrollTo(0, 60);
 changeTitle();
 hackLinks();
 makeLinks();
 changeStyle();
 makeShortcuts();
+window.scrollTo(0, 60);
 

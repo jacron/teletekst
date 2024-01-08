@@ -30,7 +30,7 @@ function setTitleWithTime() {
 }
 
 function changeTitle() {
-    console.log(document.title);
+    // console.log(document.title);
     if (document.title === '- NOS Teletekst') {
         setTitleNotFound();
         appendOnderregel();

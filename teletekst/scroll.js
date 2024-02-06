@@ -80,6 +80,7 @@ function changeStyle() {
     <style>
         html, body {
             background-color: #222;
+            line-height: 1.2;
         }
     </style>`;
 }

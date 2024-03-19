@@ -1,3 +1,6 @@
+const newsLines = [];
+let activatedNewsLineIndex = -1;
+
 const onderregelHtml = [
     '<span class="red "><a id="fastText1Red" class="red" href="/webplus?p=102"> binnenland</a></span>',
     '<span class="green "><a id="fastText2Green" class="green" href="/webplus?p=601">    sport  </a></span>',
@@ -5,9 +8,21 @@ const onderregelHtml = [
     '<span class="cyan "><a id="fastText4Blue" class="cyan" href="/webplus?p=702">  weer</a></span>  ',
 ];
 
+const css =
+`.active { 
+    border: 1px solid grey !important; 
+}
+.newsline { 
+    border: 1px solid transparent; 
+}
+html, body {
+    background-color: #222;
+    line-height: 1.2;
+}
+`;
+
 function getPageFromHref() {
     const href = document.location.href;
-    console.log(href)
     const pos = href.indexOf('=');
     return href.substring(pos + 1);
 }
@@ -22,15 +37,19 @@ function appendOnderregel() {
     document.getElementById('content').appendChild(div);
 }
 
+function fillZero(n) {
+    if (n < 10) return '0' + n;
+    return n;
+}
+
 function setTitleWithTime() {
     const now = new Date();
     document.title = 'NOS Teletekst - ' +
         now.getHours() + ':' +
-        now.getMinutes();
+        fillZero(now.getMinutes());
 }
 
 function changeTitle() {
-    // console.log(document.title);
     if (document.title === '- NOS Teletekst') {
         setTitleNotFound();
         appendOnderregel();
@@ -55,7 +74,7 @@ function hackLinks() {
     }
 }
 
-function makeLink(span, url) {
+function makeTextToLink(span, url) {
     const text = span.textContent;
     if (text.indexOf(url) !== -1) {
         const anchor = document.createElement('a');
@@ -69,23 +88,116 @@ function makeLink(span, url) {
 function makeLinks() {
     const spans = document.getElementsByTagName('span');
     for (let span of spans) {
-        makeLink(span, 'www.weerplaza.nl');
-        makeLink(span, 'www.nos.nl')
+        makeTextToLink(span, 'www.weerplaza.nl');
+        makeTextToLink(span, 'www.nos.nl')
     }
 }
 
-function changeStyle() {
-    // Change background color to the value of immersive reader (Edge).
-    document.head.innerHTML += `
-    <style>
-        html, body {
-            background-color: #222;
-            line-height: 1.2;
-        }
-    </style>`;
+function injectStyle() {
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = css;
+    document.head.appendChild(styleElement);
 }
 
-function makeShortcuts() {
+function prepareNavigationList() {
+    const spans = document.getElementsByTagName('span');
+    for (let span of spans) {
+        if (span.classList.contains('cyan')) {
+            if (span.innerText.trim().indexOf(' ') !== -1) {
+                span.classList.add('newsline');
+                newsLines.push(span);
+            }
+        }
+    }
+}
+
+function activateFirst() {
+    activatedNewsLineIndex = 0;
+    activateNewsline();
+}
+
+function activateLast() {
+    activatedNewsLineIndex = newsLines.length - 1;
+    activateNewsline();
+}
+
+function clearActivations() {
+    for (let span of newsLines) {
+        span.classList.remove('active');
+    }
+}
+
+function activateNewsline() {
+    newsLines[activatedNewsLineIndex].classList.add('active');
+}
+
+function navigateDown() {
+    if (activatedNewsLineIndex === -1) {
+        activateFirst();
+        return;
+    }
+    if (activatedNewsLineIndex < newsLines.length - 1) {
+        clearActivations();
+        activatedNewsLineIndex++;
+        activateNewsline();
+    }
+}
+
+function navigateUp() {
+    if (activatedNewsLineIndex === -1) {
+        activateLast();
+        return;
+    }
+    if (activatedNewsLineIndex > 0) {
+        clearActivations();
+        activatedNewsLineIndex--;
+        activateNewsline();
+    }
+}
+
+function navigateInto() {
+    const activeSpan = newsLines[activatedNewsLineIndex];
+    const nextSpan = activeSpan.nextElementSibling;
+    const a = nextSpan.querySelector('a');
+    a.click();
+}
+
+function navigateFirst() {
+    if (activatedNewsLineIndex !== 0) {
+        clearActivations();
+        activateFirst();
+    }
+}
+
+function navigateLast() {
+    if (activatedNewsLineIndex !== newsLines.length - 1) {
+        clearActivations();
+        activateLast();
+    }
+}
+
+function isNumberKey(e) {
+    const regex = /^\d+$/;
+    return regex.test(e.key);
+}
+
+function navigateByCapital(e) {
+    if (isNumberKey(e)) {
+        return;
+    }
+    const capital = e.key.toUpperCase();
+    for (let i = 0; i < newsLines.length; i++) {
+        const span = newsLines[i];
+        if (span.innerText.trim().startsWith(capital)) {
+            clearActivations();
+            activatedNewsLineIndex = i;
+            activateNewsline();
+            e.preventDefault();
+        }
+    }
+}
+
+function handleKeyDown() {
     document.body.addEventListener('keydown', e => {
         switch (e.key) {
             case 'F1':
@@ -100,6 +212,29 @@ function makeShortcuts() {
             case 'F4':
                 document.getElementById('fastText4Blue').click();
                 break;
+            case 'ArrowDown':
+                e.preventDefault();
+                navigateDown();
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                navigateUp();
+                break;
+            case 'Home':
+                e.preventDefault();
+                navigateFirst();
+                break;
+            case 'End':
+                e.preventDefault();
+                navigateLast();
+                break;
+            case 'Enter':
+                e.preventDefault();
+                navigateInto();
+                break;
+            default:
+                navigateByCapital(e);
+                break
         }
     });
 }
@@ -107,7 +242,10 @@ function makeShortcuts() {
 changeTitle();
 hackLinks();
 makeLinks();
-changeStyle();
-makeShortcuts();
-window.scrollTo(0, 60);
+injectStyle();
+handleKeyDown();
+prepareNavigationList();
+setTimeout(() => {
+    window.scrollTo(0, 60);
+}, 100);
 

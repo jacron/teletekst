@@ -155,11 +155,21 @@ function navigateUp() {
     }
 }
 
-function navigateInto() {
+function navigateNewspage() {
     const activeSpan = newsLines[activatedNewsLineIndex];
     const nextSpan = activeSpan.nextElementSibling;
     const a = nextSpan.querySelector('a');
     a.click();
+}
+
+function navigateInto(e) {
+    if (document.getElementById('navi').value.length === 0) {
+        if (activatedNewsLineIndex !== -1) {
+            navigateNewspage();
+        }
+        /* this is also a fix to navigating to an empty number */
+        e.preventDefault();
+    }
 }
 
 function navigateFirst() {
@@ -229,8 +239,7 @@ function handleKeyDown() {
                 navigateLast();
                 break;
             case 'Enter':
-                e.preventDefault();
-                navigateInto();
+                navigateInto(e);
                 break;
             default:
                 navigateByCapital(e);

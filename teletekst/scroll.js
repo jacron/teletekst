@@ -1,4 +1,5 @@
-const newsLines = [];
+// console.log('scroll.js loaded')
+let newsLines = [];
 let activatedNewsLineIndex = -1;
 
 const onderregelHtml = [
@@ -44,9 +45,12 @@ function fillZero(n) {
 
 function setTitleWithTime() {
     const now = new Date();
-    document.title = 'NOS Teletekst - ' +
-        now.getHours() + ':' +
-        fillZero(now.getMinutes());
+    const onderwerp = document.querySelector('.yellow.bg-blue');
+    if (onderwerp) {
+        document.title = onderwerp.textContent + ' - ' +
+            now.getHours() + ':' +
+            fillZero(now.getMinutes());
+    }
 }
 
 function changeTitle() {
@@ -164,11 +168,11 @@ function navigateNewspage() {
 
 function navigateInto(e) {
     if (document.getElementById('navi').value.length === 0) {
-        if (activatedNewsLineIndex !== -1) {
-            navigateNewspage();
-        }
-        /* this is also a fix to navigating to an empty number */
+        /* this is a fix to navigating to an empty number */
         e.preventDefault();
+    }
+    if (activatedNewsLineIndex !== -1) {
+        navigateNewspage();
     }
 }
 

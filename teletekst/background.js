@@ -16,14 +16,26 @@ function calcLeft(w) {
     return screen.width / 2 - (w / 2);
 }
 
+function injectScript(id) {
+    // console.log('inject script');
+    chrome.tabs.executeScript(id, {
+        file: 'scroll.js'
+    }, () => {});
+}
+
+function createPopup() {
+    createData.left = calcLeft(createData.width);
+    chrome.windows.create(createData, win => {
+        activePopup.tabId = win.tabs[0].id;
+        activePopup.winId = win.id;
+        // injectScript(activePopup.tabId)
+    });
+}
+
 chrome.browserAction.onClicked.addListener(function() {
     /** prevent multiple popups */
     if (!activePopup.winId) {
-        createData.left = calcLeft(createData.width);
-        chrome.windows.create(createData, win => {
-            activePopup.tabId = win.tabs[0].id;
-            activePopup.winId = win.id;
-        });
+        createPopup();
     } else {
         chrome.windows.remove(activePopup.winId).then();
     }
@@ -32,9 +44,7 @@ chrome.browserAction.onClicked.addListener(function() {
 chrome.tabs.onUpdated.addListener((id, tabChangeInfo) => {
     if (tabChangeInfo.status && tabChangeInfo.status === 'loading' &&
         id === activePopup.tabId) {
-            chrome.tabs.executeScript(id, {
-                file: 'scroll.js'
-            }, () => {});
+        injectScript(id);
     }
 });
 
@@ -42,7 +52,6 @@ chrome.windows.onRemoved.addListener(windowId => {
     if (windowId === activePopup.winId) {
         activePopup.winId = null;
         activePopup.tabId = null;
-        // console.log('the popup closed');
     }
 });
 

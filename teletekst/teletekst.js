@@ -1,4 +1,4 @@
-// console.log('scroll.js loaded')
+// console.log('teletekst.js loaded')
 let newsLines = [];
 let activatedNewsLineIndex = -1;
 
@@ -211,52 +211,65 @@ function navigateByCapital(e) {
     }
 }
 
-function handleKeyDown() {
-    document.body.addEventListener('keydown', e => {
-        switch (e.key) {
-            case 'F1':
-                document.getElementById('fastText1Red').click();
-                break;
-            case 'F2':
-                document.getElementById('fastText2Green').click();
-                break;
-            case 'F3':
-                document.getElementById('fastText3Yellow').click();
-                break;
-            case 'F4':
-                document.getElementById('fastText4Blue').click();
-                break;
-            case 'ArrowDown':
-                e.preventDefault();
-                navigateDown();
-                break;
-            case 'ArrowUp':
-                e.preventDefault();
-                navigateUp();
-                break;
-            case 'Home':
-                e.preventDefault();
-                navigateFirst();
-                break;
-            case 'End':
-                e.preventDefault();
-                navigateLast();
-                break;
-            case 'Enter':
-                navigateInto(e);
-                break;
-            default:
-                navigateByCapital(e);
-                break
-        }
-    });
+function tryClose() {
+    chrome.runtime.sendMessage({message: 'closeWindow'},
+        () => {});
 }
 
+function keydownListener(e) {
+    switch (e.key) {
+        case 'F1':
+            document.getElementById('fastText1Red').click();
+            break;
+        case 'F2':
+            document.getElementById('fastText2Green').click();
+            break;
+        case 'F3':
+            document.getElementById('fastText3Yellow').click();
+            break;
+        case 'F4':
+            document.getElementById('fastText4Blue').click();
+            break;
+        case 'ArrowDown':
+            e.preventDefault();
+            navigateDown();
+            break;
+        case 'ArrowUp':
+            e.preventDefault();
+            navigateUp();
+            break;
+        case 'Home':
+            e.preventDefault();
+            navigateFirst();
+            break;
+        case 'End':
+            e.preventDefault();
+            navigateLast();
+            break;
+        case 'Enter':
+            navigateInto(e);
+            break;
+        case 'Escape':
+            tryClose();
+            break
+        default:
+            navigateByCapital(e);
+            break
+    }
+}
+
+function changeWindowPosition() {
+    const windowWidth = 610;  // set in createWindow.js
+    const windowTop = 40;  // set in createWindow.js
+    window.moveTo(screen.width / 2 - (windowWidth / 2), windowTop);
+}
+
+changeWindowPosition();
 changeTitle();
 hackLinks();
 makeLinks();
 injectStyle();
-handleKeyDown();
+document.body.addEventListener('keydown', keydownListener);
 prepareNavigationList();
 setTimeout(() => {
     window.scrollTo(0, 60);

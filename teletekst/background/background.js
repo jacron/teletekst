@@ -1,12 +1,12 @@
 import {activePopup} from "./state.js";
-import {createPopup} from "./createWindow.js";
+import {createPopup, removePopup, resetPopup} from "./createWindow.js";
 
 function actionClickedListener() {
     /** prevent multiple popups */
     if (!activePopup.winId) {
         createPopup();
     } else {
-        chrome.windows.remove(activePopup.winId).then();
+        removePopup();
     }
 }
 
@@ -14,7 +14,6 @@ function injectScript(id) {
     chrome.scripting.executeScript({
         target: {tabId: id},
         files: ['teletekst.js'],
-
     }, () => {});
 }
 
@@ -25,21 +24,13 @@ function tabsUpdatedListener(id, tabChangeInfo) {
     }
 }
 
-function windowRemovedListener(windowId) {
-    if (windowId === activePopup.winId) {
-        activePopup.winId = null;
-        activePopup.tabId = null;
-    }
-}
-
 function messageListener(req) {
     if (req.message === 'closeWindow') {
-        chrome.windows.remove(activePopup.winId, () => {});
+        removePopup();
     }
 }
 
 chrome.action.onClicked.addListener(actionClickedListener);
 chrome.tabs.onUpdated.addListener(tabsUpdatedListener);
-chrome.windows.onRemoved.addListener(windowRemovedListener);
+chrome.windows.onRemoved.addListener(resetPopup);
 chrome.runtime.onMessage.addListener(messageListener);
-

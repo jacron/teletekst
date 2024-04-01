@@ -34,6 +34,23 @@ function injectScript(container) {
     container.appendChild(scriptElement);
 }
 
+function keydownListener(e) {
+    switch (e.key) {
+        case 'F1':
+            document.getElementById('fastText1Red').click();
+            break;
+        case 'F2':
+            document.getElementById('fastText2Green').click();
+            break;
+        case 'F3':
+            document.getElementById('fastText3Yellow').click();
+            break;
+        case 'F4':
+            document.getElementById('fastText4Blue').click();
+            break;
+        }
+}
+
 function inject(text) {
     const parser = new DOMParser();
     const HTMLDocument = parser.parseFromString(text, 'text/html');
@@ -42,7 +59,7 @@ function inject(text) {
     injectScript(container);
     adjustLinks();
     document.querySelector('.font-control').style.display = 'none';
-    // container.addEventListener('keydown', keydownListener);
+    container.addEventListener('keydown', keydownListener);
 }
 
 function init(url) {

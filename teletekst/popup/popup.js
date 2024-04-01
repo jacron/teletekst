@@ -2,7 +2,8 @@ const teletekstHome = 'https://teletekst-data.nos.nl';
 const teletekstStart = teletekstHome + '/webplus/?p=101-1';  // https://nos.nl/teletekst#101_01';
 
 function followLink(link) {
-    const url = link.getAttribute('href');
+    const url = link.getAttribute('href'); // attribuut is niet geprefixed, zoals .href wel
+    console.log(url)
     if (url && url.length > 0) {
         init(teletekstHome + url);
     }
@@ -41,6 +42,7 @@ function inject(text) {
     injectScript(container);
     adjustLinks();
     document.querySelector('.font-control').style.display = 'none';
+    // container.addEventListener('keydown', keydownListener);
 }
 
 function init(url) {

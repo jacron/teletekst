@@ -1,3 +1,8 @@
 #container {
     padding: 0 8px;
+    font-size: 18px;
+}
+#content {
+    /* fix tegen scrollen */
+    height: 500px;
 }

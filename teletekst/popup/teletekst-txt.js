@@ -9,6 +9,7 @@
     document.getElementById('navi').focus();
 
     function handleKeyInput(ev) {
+        console.log(ev)
         let keyCode = ev.keyCode || ev.which;
         let key = {left: 37, up: 38, right: 39, down: 40, pageDown: 34, pageUp: 33};
         if (keyCode >= 48 && keyCode <= 57) {
@@ -32,7 +33,12 @@
                 followLink(btns_pager[2]);
                 break;
         }
-        return;
+        if (ev.metaKey) {
+            if (ev.key === '[') {
+                goBack();
+                ev.preventDefault();
+            }
+        }
     }
 
     function getAllElementsWithAttribute(attribute) {

@@ -138,20 +138,25 @@ function urlWithPage(page) {
     return teletekstPagina + page;
 }
 
+/* N.B. Using a history like this only provides for Back, not Forward */
+function goBack() {
+    let history = getCookie(KEY_URL_HISTORY);
+    if (history !== '') {
+        const p = history.split(HISTORY_DELIMITER);
+        p.pop();
+        const page = p.pop();
+        if (page) {
+            history = p.join(HISTORY_DELIMITER);
+            setCookie(KEY_URL_HISTORY, history);
+            init(urlWithPage(page));
+        }
+    }
+}
+
 function handleBack() {
     const backButton = document.querySelector('#navigatie .back');
     backButton.addEventListener('click', e => {
-        let history = getCookie(KEY_URL_HISTORY);
-        if (history !== '') {
-            const p = history.split(HISTORY_DELIMITER);
-            p.pop();
-            const page = p.pop();
-            if (page) {
-                history = p.join(HISTORY_DELIMITER);
-                setCookie(KEY_URL_HISTORY, history);
-                init(urlWithPage(page));
-            }
-        }
+        goBack();
         e.preventDefault();
     })
 }
@@ -169,9 +174,14 @@ function writeHistory(url) {
     setCookie(KEY_URL_HISTORY, history);
 }
 
+function queryAgainstCaching() {
+    const date = new Date();
+    return '&time=' + date.getTime();
+}
+
 function init(url) {
     writeHistory(url);
-    fetch(url, {mode: 'no-cors'})
+    fetch(url + queryAgainstCaching(), {mode: 'no-cors'})
         .then(res => res.text())
         .then(text => inject(text))
         .catch(err => console.error(err));

@@ -1,155 +1,29 @@
-const teletekstHome = 'https://teletekst-data.nos.nl';
-/* real url: https://nos.nl/teletekst#101_01 */
-const teletekstStart = teletekstHome + '/webplus/?p=101-1';
-const teletekstPagina = teletekstHome + '/webplus/?p=';
-const KEY_URL_HISTORY = 'url_history';
-const HISTORY_DELIMITER = '%';
-
-const newsLines = {
-    lines: [],
-    index: -1
-}
-
-function initNewsLines() {
-    newsLines.index = -1;
-    newsLines.lines = [];
-}
-
-function getAnchor(newsline) {
-    /* p 102 bevat anchor in span */
-    let a = newsline.querySelector('a');
-    if (!a) {
-        /* p 101 bevat anchor in volgende (sibling) span */
-        const nextSpan = newsline.nextElementSibling;
-        a = nextSpan.querySelector('a');
-    }
-    return a;
-}
-
-function prepareNavigationList() {
-    const spans = document.getElementsByTagName('span');
-    for (let span of spans) {
-        const hasColor = span.classList.contains('cyan') || span.classList.contains('yellow');
-        if (hasColor && getAnchor(span)) {
-            if (span.innerText.trim().indexOf(' ') !== -1) {
-                span.classList.add('newsline');
-                newsLines.lines.push(span);
-            }
-        }
-    }
-}
-
-function navigateNewspage() {
-    const activeSpan = newsLines.lines[newsLines.index];
-    const a = getAnchor(activeSpan);
-    a.click();
-}
-
-function navigateFirst() {
-    if (newsLines.index !== 0) {
-        clearActivations();
-        activateFirst();
-    }
-}
-
-function navigateLast() {
-    if (newsLines.index !== newsLines.lines.length - 1) {
-        clearActivations();
-        activateLast();
-    }
-}
-
-function navigateInto(e) {
-    if (document.getElementById('navi').value.length === 0) {
-        /* this is a fix to navigating to an empty number */
-        e.preventDefault();
-    }
-    if (newsLines.index !== -1) {
-        navigateNewspage();
-    }
-}
-
-function activateFirst() {
-    newsLines.index = 0;
-    activateNewsline();
-}
-
-function activateLast() {
-    newsLines.index = newsLines.lines.length - 1;
-    activateNewsline();
-}
-
-function clearActivations() {
-    for (let span of newsLines.lines) {
-        span.classList.remove('active');
-    }
-}
-
-function activateNewsline() {
-    newsLines.lines[newsLines.index].classList.add('active');
-}
-
-/* navigate on ArrowUp */
-function prevLine() {
-    if (newsLines.index === -1) {
-        activateLast();
-    } else if (newsLines.index > 0) {
-        clearActivations();
-        newsLines.index--;
-        activateNewsline();
-    }
-}
-
-/* navigate on ArroDown */
-function nextLine() {
-    if (newsLines.index === -1) {
-        activateFirst();
-    } else if (newsLines.index < newsLines.lines.length -1) {
-        clearActivations();
-        newsLines.index++;
-        activateNewsline();
-    }
-}
+import {
+    initNewsLines,
+    navigateFirst,
+    navigateInto,
+    navigateLast,
+    nextLine,
+    prepareNavigationList,
+    prevLine
+} from "./newsLines.js";
+import {goBack, initHistory, writeHistory} from "./history.js";
+import {config} from "./config.js";
 
 function _followLink(url) {
     if (url && url.length > 0) {
-        init(teletekstHome + url);
+        init(config.teletekstHome + url);
     }
-}
-
-function expiresValue(days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    return "; expires=" + date.toGMTString();
-}
-
-/* set and getCookie is copied from the original script, and adapted */
-function setCookie(name, value, days) {
-    if (!days) {
-        days = 1;
-    }
-    document.cookie = name + "=" + value + expiresValue(days) + "; path=/";
-}
-
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return false;
 }
 
 function adjustOneLink(link) {
     const href = link.getAttribute('href');
     if (href && href.startsWith('/')) {
         link.addEventListener('click', e => {
-            let url = teletekstHome + href;
+            let url = config.teletekstHome + href;
             /* 'pagina niet gevonden'? */
             if (href.indexOf('?p') === -1) {
-                url = teletekstStart;
+                url = config.teletekstStart;
             }
             init(url);
             e.preventDefault();
@@ -210,7 +84,7 @@ function handleSubmit() {
     form.addEventListener('submit', e => {
         const inputValue = input.value;
         if (inputValue.length && inputValue.length === 3) {
-            const url = teletekstHome + '/webplus/?p=' + inputValue;
+            const url = config.teletekstHome + '/webplus/?p=' + inputValue;
             console.log(url)
             init(url);
         }
@@ -219,54 +93,89 @@ function handleSubmit() {
     })
 }
 
-function pageFromUrl(url) {
-    const p = url.split('?p=');
-    return p[1];
+function queryAgainstCaching() {
+    const date = new Date();
+    return '&time=' + date.getTime();
 }
 
-function urlWithPage(page) {
-    return teletekstPagina + page;
+document.onkeydown = function (event) {
+    handleKeyInput(event);
+};
+
+function followLinks(e) {
+    const btns_pager = document.querySelectorAll('a[data-pager]');
+    const [p_prev, sp_prev, sp_next, p_next] = btns_pager;
+    let link = null;
+    switch (e.key) {
+        case 'ArrowLeft':
+        case 'PageUp':
+            link = p_prev;
+            break;
+        case 'ArrowRight':
+        case 'PageDown':
+            link = p_next;
+            break;
+        case 'ArrowUp':
+            if (sp_prev.classList.contains('disabled')) {
+                prevLine();
+            } else {
+                link = sp_prev;
+            }
+            break;
+        case 'ArrowDown':
+            if (sp_next.classList.contains('disabled')) {
+                nextLine();
+            } else {
+                link = sp_next;
+            }
+            break;
+        case 'Home':
+            e.preventDefault();
+            navigateFirst();
+            break;
+        case 'End':
+            e.preventDefault();
+            navigateLast();
+            break;
+        case 'Enter':
+            navigateInto(e);
+            break;
+    }
+    if (link) {
+        const url = link.getAttribute('href'); // attribuut is niet geprefixed, zoals .href wel
+        _followLink(url);
+    }
 }
 
-/* N.B. Using a history like this only provides for Back, not Forward */
-function goBack() {
-    let history = getCookie(KEY_URL_HISTORY);
-    if (history !== '') {
-        const p = history.split(HISTORY_DELIMITER);
-        p.pop();
-        const page = p.pop();
-        if (page) {
-            history = p.join(HISTORY_DELIMITER);
-            setCookie(KEY_URL_HISTORY, history);
-            init(urlWithPage(page));
+function handleMetaKey(e) {
+    if (e.metaKey) {
+        if (e.key === '[') {
+            goBack().then(url => init(url));
+            e.preventDefault();
         }
     }
+}
+
+function isNumberKey(key) {
+    const regex = /^\d+$/;
+    return regex.test(key);
+}
+
+function handleKeyInput(e) {
+    if (isNumberKey(e.key)) {
+        document.getElementById('navi').focus();
+        return;
+    }
+    followLinks(e);
+    handleMetaKey(e);
 }
 
 function handleBack() {
     const backButton = document.querySelector('#navigatie .back');
     backButton.addEventListener('click', e => {
-        goBack();
+        goBack().then(url => init(url));
         e.preventDefault();
     })
-}
-
-function writeHistory(url) {
-    const page = pageFromUrl(url);
-    let history = getCookie(KEY_URL_HISTORY);
-    if (history !== '') {
-        const p = history.split(HISTORY_DELIMITER);
-        p.push(page)
-        history = p.join(HISTORY_DELIMITER)
-    } else {
-        history = page;
-    }
-    setCookie(KEY_URL_HISTORY, history);
-}
-
-function queryAgainstCaching() {
-    const date = new Date();
-    return '&time=' + date.getTime();
 }
 
 function inject(text) {
@@ -294,6 +203,6 @@ function init(url) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    setCookie(KEY_URL_HISTORY, '');
-    init(teletekstStart);
+    initHistory();
+    init(config.teletekstStart);
 });

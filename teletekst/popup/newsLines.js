@@ -79,7 +79,9 @@ function clearActivations() {
 }
 
 function activateNewsline() {
-    newsLines.lines[newsLines.index].classList.add('active');
+    if (newsLines.lines[newsLines.index]) {
+        newsLines.lines[newsLines.index].classList.add('active');
+    }
 }
 
 /* navigate on ArrowUp */

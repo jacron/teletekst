@@ -1,20 +1,11 @@
 import {
     initNewsLines,
-    navigateFirst,
-    navigateInto,
-    navigateLast,
-    nextLine,
     prepareNavigationList,
-    prevLine
 } from "./newsLines.js";
 import {goBack, initHistory, writeHistory} from "./history.js";
 import {config} from "./config.js";
-
-function _followLink(url) {
-    if (url && url.length > 0) {
-        init(config.teletekstHome + url);
-    }
-}
+import {makeExternalLinks} from "./externalLinks.js";
+import {handleKeyInput} from "./keyinput.js";
 
 function adjustOneLink(link) {
     const href = link.getAttribute('href');
@@ -54,26 +45,6 @@ function keydownListener(e) {
     }
 }
 
-function externalAnchorString(url) {
-    const realUrl = 'https://' + url;
-    return `<a href="${realUrl}" target="_blank" class="external-link">${url}</a>`;
-}
-
-function makeOneExternalLink(span, url) {
-    let html = span.innerHTML;
-    if (html.indexOf(url) !== -1) {
-        span.innerHTML = html.replace(url, externalAnchorString(url));
-    }
-}
-
-function makeExternalLinks() {
-    const spans = document.getElementsByTagName('span');
-    for (let span of spans) {
-        makeOneExternalLink(span, 'www.weerplaza.nl');
-        makeOneExternalLink(span, 'www.nos.nl')
-    }
-}
-
 function hideControls() {
     document.querySelector('.font-control').style.display = 'none';
 }
@@ -96,78 +67,6 @@ function handleSubmit() {
 function queryAgainstCaching() {
     const date = new Date();
     return '&time=' + date.getTime();
-}
-
-document.onkeydown = function (event) {
-    handleKeyInput(event);
-};
-
-function followLinks(e) {
-    const btns_pager = document.querySelectorAll('a[data-pager]');
-    const [p_prev, sp_prev, sp_next, p_next] = btns_pager;
-    let link = null;
-    switch (e.key) {
-        case 'ArrowLeft':
-        case 'PageUp':
-            link = p_prev;
-            break;
-        case 'ArrowRight':
-        case 'PageDown':
-            link = p_next;
-            break;
-        case 'ArrowUp':
-            if (sp_prev.classList.contains('disabled')) {
-                prevLine();
-            } else {
-                link = sp_prev;
-            }
-            break;
-        case 'ArrowDown':
-            if (sp_next.classList.contains('disabled')) {
-                nextLine();
-            } else {
-                link = sp_next;
-            }
-            break;
-        case 'Home':
-            e.preventDefault();
-            navigateFirst();
-            break;
-        case 'End':
-            e.preventDefault();
-            navigateLast();
-            break;
-        case 'Enter':
-            navigateInto(e);
-            break;
-    }
-    if (link) {
-        const url = link.getAttribute('href'); // attribuut is niet geprefixed, zoals .href wel
-        _followLink(url);
-    }
-}
-
-function handleMetaKey(e) {
-    if (e.metaKey) {
-        if (e.key === '[') {
-            goBack().then(url => init(url));
-            e.preventDefault();
-        }
-    }
-}
-
-function isNumberKey(key) {
-    const regex = /^\d+$/;
-    return regex.test(key);
-}
-
-function handleKeyInput(e) {
-    if (isNumberKey(e.key)) {
-        document.getElementById('navi').focus();
-        return;
-    }
-    followLinks(e);
-    handleMetaKey(e);
 }
 
 function handleBack() {
@@ -206,3 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initHistory();
     init(config.teletekstStart);
 });
+document.onkeydown = function (event) {
+    handleKeyInput(event).then(url => init(url)).catch();
+};
+

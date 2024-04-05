@@ -5,6 +5,104 @@ const teletekstPagina = teletekstHome + '/webplus/?p=';
 const KEY_URL_HISTORY = 'url_history';
 const HISTORY_DELIMITER = '%';
 
+const newsLines = {
+    lines: [],
+    index: -1
+}
+
+function initNewsLines() {
+    newsLines.index = -1;
+    newsLines.lines = [];
+}
+
+function prepareNavigationList() {
+    const spans = document.getElementsByTagName('span');
+    for (let span of spans) {
+        if (span.classList.contains('cyan') || span.classList.contains('yellow')) {
+            if (span.innerText.trim().indexOf(' ') !== -1) {
+                span.classList.add('newsline');
+                newsLines.lines.push(span);
+            }
+        }
+    }
+}
+
+function navigateNewspage() {
+    const activeSpan = newsLines.lines[newsLines.index];
+    let a = activeSpan.querySelector('a');
+    if (!a) {
+        const nextSpan = activeSpan.nextElementSibling;
+        a = nextSpan.querySelector('a');
+    }
+    a.click();
+}
+
+function navigateFirst() {
+    if (newsLines.index !== 0) {
+        clearActivations();
+        activateFirst();
+    }
+}
+
+function navigateLast() {
+    if (newsLines.index !== newsLines.lines.length - 1) {
+        clearActivations();
+        activateLast();
+    }
+}
+
+function navigateInto(e) {
+    if (document.getElementById('navi').value.length === 0) {
+        /* this is a fix to navigating to an empty number */
+        e.preventDefault();
+    }
+    if (newsLines.index !== -1) {
+        navigateNewspage();
+    }
+}
+
+function activateFirst() {
+    newsLines.index = 0;
+    activateNewsline();
+}
+
+function activateLast() {
+    newsLines.index = newsLines.lines.length - 1;
+    activateNewsline();
+}
+
+function clearActivations() {
+    for (let span of newsLines.lines) {
+        span.classList.remove('active');
+    }
+}
+
+function activateNewsline() {
+    newsLines.lines[newsLines.index].classList.add('active');
+}
+
+/* navigate on ArrowUp */
+function prevLine() {
+    if (newsLines.index === -1) {
+        activateLast();
+    } else if (newsLines.index > 0) {
+        clearActivations();
+        newsLines.index--;
+        activateNewsline();
+    }
+}
+
+/* navigate on ArroDown */
+function nextLine() {
+    if (newsLines.index === -1) {
+        activateFirst();
+    } else if (newsLines.index < newsLines.lines.length -1) {
+        clearActivations();
+        newsLines.index++;
+        activateNewsline();
+    }
+}
+
 function _followLink(url) {
     if (url && url.length > 0) {
         init(teletekstHome + url);
@@ -40,7 +138,6 @@ function adjustOneLink(link) {
     const href = link.getAttribute('href');
     if (href && href.startsWith('/')) {
         link.addEventListener('click', e => {
-            console.log(href)
             let url = teletekstHome + href;
             /* 'pagina niet gevonden'? */
             if (href.indexOf('?p') === -1) {
@@ -114,19 +211,6 @@ function handleSubmit() {
     })
 }
 
-function inject(text) {
-    const parser = new DOMParser();
-    const HTMLDocument = parser.parseFromString(text, 'text/html');
-    const container = document.getElementById('container');
-    container.innerHTML = HTMLDocument.body.innerHTML;
-    makeExternalLinks();
-    adjustLinks();
-    hideControls();
-    container.addEventListener('keydown', keydownListener);
-    handleSubmit();
-    handleBack();
-}
-
 function pageFromUrl(url) {
     const p = url.split('?p=');
     return p[1];
@@ -175,6 +259,22 @@ function writeHistory(url) {
 function queryAgainstCaching() {
     const date = new Date();
     return '&time=' + date.getTime();
+}
+
+function inject(text) {
+    const parser = new DOMParser();
+    const HTMLDocument = parser.parseFromString(text, 'text/html');
+    const container = document.getElementById('container');
+    container.innerHTML = HTMLDocument.body.innerHTML;
+    initNewsLines();
+    makeExternalLinks();
+    adjustLinks();
+    hideControls();
+    prepareNavigationList();
+    container.addEventListener('keydown', keydownListener);
+    handleSubmit();
+    handleBack();
+    document.getElementById('navi').focus();
 }
 
 function init(url) {

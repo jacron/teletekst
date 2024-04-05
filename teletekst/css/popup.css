@@ -9,3 +9,14 @@
 a.external-link:hover {
     text-decoration: underline;
 }
+/* op p 101 zit nummer in volgende span */
+.newsline.active + span a {
+    color: white;
+}
+/* op p 102 zit nummer in dezelfde span */
+.newsline.active a {
+    color: white;
+}
+.newsline.active {
+    color: white;
+}

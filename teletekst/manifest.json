@@ -1,7 +1,7 @@
 {
   "name": "Teletekst",
   "description": "ipv popup",
-  "version": "1.0",
+  "version": "3.0",
   "author": "Jan H Croonen",
   "permissions": [
     "activeTab",
@@ -10,10 +10,6 @@
   "host_permissions": [
     "https://teletekst-data.nos.nl/*"
   ],
-  "background": {
-    "service_worker": "background/background.js",
-    "type": "module"
-  },
   "icons" : {
     "128": "images/teletekst2 128.png",
     "48": "images/teletekst2 48.png",

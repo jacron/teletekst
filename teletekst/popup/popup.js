@@ -6,7 +6,7 @@ import {goBack, initHistory, writeHistory} from "./history.js";
 import {config} from "./config.js";
 import {makeExternalLinks} from "./externalLinks.js";
 import {handleKeyInput, isNumber} from "./keyinput.js";
-import {hackLinks} from "./onderRegel.js";
+import {replaceLinks} from "./onderRegel.js";
 
 function adjustOneLink(link) {
     const href = link.getAttribute('href');
@@ -47,7 +47,6 @@ function keydownListener(e) {
         const [key, id] = binding;
         if (key === e.key) {
             const link = document.getElementById(id);
-            link.classList.add('onderregel');
             link.click();
         }
     }
@@ -99,7 +98,7 @@ function inject(text) {
     container.innerHTML = HTMLDocument.body.innerHTML;
     removeOriginalScript(container);
     initNewsLines();
-    hackLinks();
+    replaceLinks();
     makeExternalLinks();
     adjustLinks();
     hideControls();

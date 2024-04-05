@@ -5,4 +5,5 @@ export const config = {
     teletekstHome,
     teletekstStart: teletekstHome + '/webplus/?p=101-1',
     teletekstPagina: teletekstHome + '/webplus/?p=',
+    msgBlauwNietOproepbaar: 'Pagina\'s in blauw zijn niet oproepbaar',
 }

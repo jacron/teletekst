@@ -12,12 +12,16 @@ function adjustOneLink(link) {
     const href = link.getAttribute('href');
     if (href && href.startsWith('/')) {
         link.addEventListener('click', e => {
-            let url = config.teletekstHome + href;
-            /* 'pagina niet gevonden'? */
-            if (href.indexOf('?p') === -1) {
-                url = config.teletekstStart;
+            const isBlauw = link.classList.contains('cyan');
+            if (isBlauw) {
+                alert(config.msgBlauwNietOproepbaar);
+            } else {
+                let url = config.teletekstHome + href;
+                if (href.indexOf('?p') === -1) {
+                    url = config.teletekstStart;
+                }
+                init(url);
             }
-            init(url);
             e.preventDefault();
             return true;
         })
@@ -57,7 +61,6 @@ function handleSubmit() {
         const inputValue = input.value;
         if (inputValue.length && inputValue.length === 3) {
             const url = config.teletekstHome + '/webplus/?p=' + inputValue;
-            console.log(url)
             init(url);
         }
         e.preventDefault();
@@ -82,7 +85,7 @@ function handleBack() {
 Het maakt de source echter functioneel duidelijker. */
 function removeOriginalScript(container) {
     let script = container.querySelector('script');
-    console.log(script)  // src=/webplus.html/v6/teletekst-txt.min.js
+    // console.log(script)  // src=/webplus.html/v6/teletekst-txt.min.js
     container.removeChild(script);
 }
 

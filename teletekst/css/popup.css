@@ -6,3 +6,6 @@
     /* fix tegen scrollen */
     height: 500px;
 }
+a.external-link:hover {
+    text-decoration: underline;
+}

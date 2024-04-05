@@ -78,7 +78,7 @@ function keydownListener(e) {
 
 function externalAnchorString(url) {
     const realUrl = 'https://' + url;
-    return `<a href="${realUrl}" target="_blank">${url}</a>`;
+    return `<a href="${realUrl}" target="_blank" class="external-link">${url}</a>`;
 }
 
 function makeOneExternalLink(span, url) {

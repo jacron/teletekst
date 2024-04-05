@@ -6,6 +6,7 @@ import {goBack, initHistory, writeHistory} from "./history.js";
 import {config} from "./config.js";
 import {makeExternalLinks} from "./externalLinks.js";
 import {handleKeyInput} from "./keyinput.js";
+import {hackLinks} from "./onderRegel.js";
 
 function adjustOneLink(link) {
     const href = link.getAttribute('href');
@@ -77,12 +78,22 @@ function handleBack() {
     })
 }
 
+/* Het originele script verwijderen is niet echt nodig, daar de src niet werkt zo.
+Het maakt de source echter functioneel duidelijker. */
+function removeOriginalScript(container) {
+    let script = container.querySelector('script');
+    console.log(script)  // src=/webplus.html/v6/teletekst-txt.min.js
+    container.removeChild(script);
+}
+
 function inject(text) {
     const parser = new DOMParser();
     const HTMLDocument = parser.parseFromString(text, 'text/html');
     const container = document.getElementById('container');
     container.innerHTML = HTMLDocument.body.innerHTML;
+    removeOriginalScript(container);
     initNewsLines();
+    hackLinks();
     makeExternalLinks();
     adjustLinks();
     hideControls();
@@ -106,6 +117,5 @@ document.addEventListener('DOMContentLoaded', function () {
     init(config.teletekstStart);
 });
 document.onkeydown = function (event) {
-    handleKeyInput(event).then(url => init(url)).catch();
+    handleKeyInput(event).then(url => init(url));
 };
-

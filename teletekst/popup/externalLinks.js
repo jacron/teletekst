@@ -12,9 +12,15 @@ function makeOneExternalLink(span, url) {
 
 function makeExternalLinks() {
     const spans = document.getElementsByTagName('span');
+    const links = [
+        'eenvandaag.avrotros.nl',
+        'www.weerplaza.nl',
+        'www.nos.nl',
+    ]
     for (let span of spans) {
-        makeOneExternalLink(span, 'www.weerplaza.nl');
-        makeOneExternalLink(span, 'www.nos.nl')
+        for (let link of links) {
+            makeOneExternalLink(span, link);
+        }
     }
 }
 

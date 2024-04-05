@@ -13,7 +13,7 @@ function followLink(link) {
     }
 }
 
-/* set en getCookie overgenomen uit oorspr. script */
+/* set and getCookie is copied from the original script */
 function setCookie(name, value, days) {
     let expires = "";
     if (!days) {
@@ -76,23 +76,23 @@ function keydownListener(e) {
     }
 }
 
-function makeTextToLink(span, url) {
-    const text = span.textContent;
-    if (text.indexOf(url) !== -1) {
-        const anchor = document.createElement('a');
-        anchor.textContent = text;
-        span.textContent = '';
-        anchor.href = 'https://' + url;
-        anchor.target = '_blank';
-        span.appendChild(anchor);
+function externalAnchorString(url) {
+    const realUrl = 'https://' + url;
+    return `<a href="${realUrl}" target="_blank">${url}</a>`;
+}
+
+function makeOneExternalLink(span, url) {
+    let html = span.innerHTML;
+    if (html.indexOf(url) !== -1) {
+        span.innerHTML = html.replace(url, externalAnchorString(url));
     }
 }
 
-function makeLinks() {
+function makeExternalLinks() {
     const spans = document.getElementsByTagName('span');
     for (let span of spans) {
-        makeTextToLink(span, 'www.weerplaza.nl');
-        makeTextToLink(span, 'www.nos.nl')
+        makeOneExternalLink(span, 'www.weerplaza.nl');
+        makeOneExternalLink(span, 'www.nos.nl')
     }
 }
 
@@ -121,12 +121,12 @@ function inject(text) {
     const container = document.getElementById('container');
     container.innerHTML = HTMLDocument.body.innerHTML;
     injectScript(container);
+    makeExternalLinks();
     adjustLinks();
     hideControls();
     container.addEventListener('keydown', keydownListener);
     handleSubmit();
     handleBack();
-    makeLinks();
 }
 
 function pageFromUrl(url) {

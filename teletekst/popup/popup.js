@@ -15,10 +15,22 @@ function initNewsLines() {
     newsLines.lines = [];
 }
 
+function getAnchor(newsline) {
+    /* p 102 bevat anchor in span */
+    let a = newsline.querySelector('a');
+    if (!a) {
+        /* p 101 bevat anchor in volgende (sibling) span */
+        const nextSpan = newsline.nextElementSibling;
+        a = nextSpan.querySelector('a');
+    }
+    return a;
+}
+
 function prepareNavigationList() {
     const spans = document.getElementsByTagName('span');
     for (let span of spans) {
-        if (span.classList.contains('cyan') || span.classList.contains('yellow')) {
+        const hasColor = span.classList.contains('cyan') || span.classList.contains('yellow');
+        if (hasColor && getAnchor(span)) {
             if (span.innerText.trim().indexOf(' ') !== -1) {
                 span.classList.add('newsline');
                 newsLines.lines.push(span);
@@ -29,11 +41,7 @@ function prepareNavigationList() {
 
 function navigateNewspage() {
     const activeSpan = newsLines.lines[newsLines.index];
-    let a = activeSpan.querySelector('a');
-    if (!a) {
-        const nextSpan = activeSpan.nextElementSibling;
-        a = nextSpan.querySelector('a');
-    }
+    const a = getAnchor(activeSpan);
     a.click();
 }
 

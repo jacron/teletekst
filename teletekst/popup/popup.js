@@ -1,34 +1,33 @@
 const teletekstHome = 'https://teletekst-data.nos.nl';
-const teletekstStart = teletekstHome + '/webplus/?p=101-1';  // https://nos.nl/teletekst#101_01';
-const teletekstPagina = teletekstHome + '/webplus/?p=';  // https://nos.nl/teletekst#101_01';
-const nativeScriptSrc = 'teletekst-txt.js';
+/* real url: https://nos.nl/teletekst#101_01 */
+const teletekstStart = teletekstHome + '/webplus/?p=101-1';
+const teletekstPagina = teletekstHome + '/webplus/?p=';
 const KEY_URL_HISTORY = 'url_history';
 const HISTORY_DELIMITER = '%';
 
-/* followLink() is migrated from teletekst-txt.js, and customized */
-function followLink(link) {
-    const url = link.getAttribute('href'); // attribuut is niet geprefixed, zoals .href wel
+function _followLink(url) {
     if (url && url.length > 0) {
         init(teletekstHome + url);
     }
 }
 
-/* set and getCookie is copied from the original script */
+function expiresValue(days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    return "; expires=" + date.toGMTString();
+}
+
+/* set and getCookie is copied from the original script, and adapted */
 function setCookie(name, value, days) {
-    let expires = "";
     if (!days) {
         days = 1;
     }
-    if (days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toGMTString();
-    }
-    document.cookie = name + "=" + value + expires + "; path=/";
+    document.cookie = name + "=" + value + expiresValue(days) + "; path=/";
 }
 
 function getCookie(name) {
-    const nameEQ = name + "=", ca = document.cookie.split(';');
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
         while (c.charAt(0) === ' ') c = c.substring(1, c.length);
@@ -41,7 +40,13 @@ function adjustOneLink(link) {
     const href = link.getAttribute('href');
     if (href && href.startsWith('/')) {
         link.addEventListener('click', e => {
-            init(teletekstHome + href);
+            console.log(href)
+            let url = teletekstHome + href;
+            /* 'pagina niet gevonden'? */
+            if (href.indexOf('?p') === -1) {
+                url = teletekstStart;
+            }
+            init(url);
             e.preventDefault();
             return true;
         })
@@ -53,12 +58,6 @@ function adjustLinks() {
     for (let link of links) {
         adjustOneLink(link)
     }
-}
-
-function injectScript(container) {
-    const scriptElement = document.createElement('script');
-    scriptElement.setAttribute('src', nativeScriptSrc);
-    container.appendChild(scriptElement);
 }
 
 function keydownListener(e) {
@@ -120,7 +119,6 @@ function inject(text) {
     const HTMLDocument = parser.parseFromString(text, 'text/html');
     const container = document.getElementById('container');
     container.innerHTML = HTMLDocument.body.innerHTML;
-    injectScript(container);
     makeExternalLinks();
     adjustLinks();
     hideControls();

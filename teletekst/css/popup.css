@@ -3,7 +3,7 @@
     font-size: 18px;
 }
 #content {
-    /* fix tegen scrollen */
+    /* fix tegen scrollen cq overbodige verticale scroll bar */
     height: 500px;
 }
 a.external-link:hover {

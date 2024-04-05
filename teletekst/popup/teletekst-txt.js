@@ -8,36 +8,66 @@
     };
     document.getElementById('navi').focus();
 
-    function handleKeyInput(ev) {
-        let keyCode = ev.keyCode || ev.which;
-        let key = {left: 37, up: 38, right: 39, down: 40, pageDown: 34, pageUp: 33};
-        if (keyCode >= 48 && keyCode <= 57) {
-            document.getElementById('navi').focus();
-            return;
-        }
+    function prevLine() {
+
+    }
+
+    function nextLine() {
+
+    }
+
+    function followLinks(keyCode) {
         const btns_pager = getAllElementsWithAttribute('data-pager');
+        const [p_prev, sp_prev, sp_next, p_next] = btns_pager;
+        let key = {left: 37, up: 38, right: 39, down: 40, pageDown: 34, pageUp: 33};
+        let link = null;
         switch (keyCode) {
             case key.left:
             case key.pageDown:
-                followLink(btns_pager[0]);
+                link = p_prev;
                 break;
             case key.right:
             case key.pageUp:
-                followLink(btns_pager[3]);
+                link = p_next;
                 break;
             case key.up:
-                followLink(btns_pager[1]);
+                if (sp_prev.classList.contains('disabled')) {
+                    prevLine();
+                } else {
+                    link = sp_prev;
+                }
                 break;
             case key.down:
-                followLink(btns_pager[2]);
+                if (sp_next.classList.contains('disabled')) {
+                    nextLine();
+                } else {
+                    link = sp_next;
+                }
                 break;
         }
+        if (link) {
+            const url = link.getAttribute('href'); // attribuut is niet geprefixed, zoals .href wel
+            _followLink(url);
+        }
+    }
+
+    function handleMetaKey(ev) {
         if (ev.metaKey) {
             if (ev.key === '[') {
                 goBack();
                 ev.preventDefault();
             }
         }
+    }
+
+    function handleKeyInput(ev) {
+        let keyCode = ev.keyCode || ev.which;
+        if (keyCode >= 48 && keyCode <= 57) {
+            document.getElementById('navi').focus();
+            return;
+        }
+        followLinks(keyCode);
+        handleMetaKey(ev);
     }
 
     function getAllElementsWithAttribute(attribute) {

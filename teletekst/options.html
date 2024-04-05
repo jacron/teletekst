@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Teletekst Browser Opties</title>
+    <title>TeletekstView Opties</title>
 </head>
 <body>
 <h2>Sneltoetsen</h2>
@@ -12,5 +12,21 @@
     <tr><td>Pijl omlaag</td><td>Volgende subbladzijde</td></tr>
     <tr><td>Pijl omhoog</td><td>Vorige subbladzijde</td></tr>
 </table>
+<h2>Koppelingen voor de onderregel</h2>
+<form>
+    <table id="onderregelOpties">
+        <tr><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td></tr>
+    </table>
+    <input type="checkbox" name="state" id="state" checked>
+    <label for="state">Deze waarden gebruiken</label>
+</form>
+<p>
+    <span>Totale lengte (41 is het beste): </span>
+    <span id="totalLength"></span>
+</p>
+<script src="options.js" type="module"></script>
 </body>
 </html>

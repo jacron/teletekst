@@ -1,9 +1,5 @@
-const optionalLinks = [
-    [' nieuws ', 101],
-    [' actualiteit ', 220],
-    [' documentaire ', 228],
-    [' weer ', 702],
-]
+import {config} from "./config.js";
+
 const onderRegelLinks = [
     'fastText1Red', 'fastText2Green', 'fastText3Yellow','fastText4Blue',
 ]
@@ -11,8 +7,8 @@ const onderRegelLinks = [
 function replaceLinks() {
     for (let i = 0; i < onderRegelLinks.length; i++) {
         const link = document.getElementById(onderRegelLinks[i]);
-        link.textContent = optionalLinks[i][0];
-        link.href = '/webplus?p=' + optionalLinks[i][1];
+        link.textContent = config.optionalLinks[i][0];
+        link.href = '/webplus?p=' + config.optionalLinks[i][1];
     }
 }
 

@@ -17,7 +17,7 @@ body {
     font-size: 1.2em;
     color: #fff;
     width: 25em;
-    margin: 1em auto
+    margin: 0 0 1.6em 1em; /* customized */
 }
 
 pre {

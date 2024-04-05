@@ -10,6 +10,7 @@ function hackLinks() {
         if (link) {
             link.textContent = hack[1];
             link.href = '/webplus?p=' + hack[2];
+            link.classList.add('onderregel')
         }
     }
 }

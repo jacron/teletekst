@@ -59,14 +59,14 @@ function handleMetaKey(e, resolve) {
     }
 }
 
-function isNumberKey(key) {
+function isNumber(s) {
     const regex = /^\d+$/;
-    return regex.test(key);
+    return regex.test(s);
 }
 
 function handleKeyInput(e) {
     return new Promise((resolve, reject) => {
-        if (isNumberKey(e.key)) {
+        if (isNumber(e.key)) {
             document.getElementById('navi').focus();
             return;
         }
@@ -76,4 +76,4 @@ function handleKeyInput(e) {
     })
 }
 
-export {handleKeyInput}
+export {handleKeyInput, isNumber}

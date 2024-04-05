@@ -5,18 +5,19 @@ import {
 import {goBack, initHistory, writeHistory} from "./history.js";
 import {config} from "./config.js";
 import {makeExternalLinks} from "./externalLinks.js";
-import {handleKeyInput} from "./keyinput.js";
+import {handleKeyInput, isNumber} from "./keyinput.js";
 import {hackLinks} from "./onderRegel.js";
 
 function adjustOneLink(link) {
     const href = link.getAttribute('href');
     if (href && href.startsWith('/')) {
         link.addEventListener('click', e => {
-            const isBlauw = link.classList.contains('cyan');
-            if (isBlauw) {
+            const isBlauwNummer = link.classList.contains('cyan') && isNumber(link.textContent);
+            if (isBlauwNummer) {
                 alert(config.msgBlauwNietOproepbaar);
             } else {
                 let url = config.teletekstHome + href;
+                /* 'pagina niet gevonden'? */
                 if (href.indexOf('?p') === -1) {
                     url = config.teletekstStart;
                 }
@@ -45,7 +46,9 @@ function keydownListener(e) {
     for (let binding of bindings) {
         const [key, id] = binding;
         if (key === e.key) {
-            document.getElementById(id).click();
+            const link = document.getElementById(id);
+            link.classList.add('onderregel');
+            link.click();
         }
     }
 }

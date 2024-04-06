@@ -1,75 +1,58 @@
+/* Back-navigation, using a history, stored in session-storage. */
+
 import {config} from "./config.js";
 
-const KEY_URL_HISTORY = 'url_history';
-const HISTORY_DELIMITER = '%';
+const KEY = config.storageKey.history;
+const STORAGE = chrome.storage.session;
 
-/* N.B. Using a history like this only provides for Back, not Forward */
+function urlWithUnescapedPage(page) {
+    return config.teletekstPagina + page.replace(/_/g, '-');
+}
+
+function escapedPageFromUrl(url) {
+    const p = url.split('?p=');
+    return p[1].replace(/-/g, '_');
+}
+
 function goBack() {
     return new Promise((resolve, reject) => {
-        let history = getCookie(KEY_URL_HISTORY);
-        if (history !== '') {
-            const p = history.split(HISTORY_DELIMITER);
-            p.pop();
-            const page = p.pop();
-            if (page) {
-                history = p.join(HISTORY_DELIMITER);
-                setCookie(KEY_URL_HISTORY, history);
-                resolve(urlWithPage(page));
-            }
-        }
-        reject();
+        STORAGE.get(KEY)
+            .then(results => {
+                const value = results[KEY];
+                let history;
+                if (value) {
+                    history = JSON.parse(value);
+                    history.pop();
+                    const page = history.pop();
+                    if (page) {
+                        STORAGE.set({[KEY]: JSON.stringify(history)})
+                            .then(() => resolve(urlWithUnescapedPage(page)))
+                    }
+                } else {
+                    reject('History is leeg.');
+                }
+            })
     })
 }
 
-function expiresValue(days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    return "; expires=" + date.toGMTString();
-}
-
-/* set and getCookie is copied from the original script, and adapted */
-function setCookie(name, value, days) {
-    if (!days) {
-        days = 1;
+function getHistory(url, value) {
+    const page = escapedPageFromUrl(url);
+    let history;
+    if (value) {
+        history = JSON.parse(value);
+        history.push(page);
+    } else {
+        history = [page];
     }
-    document.cookie = name + "=" + value + expiresValue(days) + "; path=/";
-}
-
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return false;
-}
-
-function pageFromUrl(url) {
-    const p = url.split('?p=');
-    return p[1];
-}
-
-function urlWithPage(page) {
-    return config.teletekstPagina + page;
+    return history;
 }
 
 function writeHistory(url) {
-    const page = pageFromUrl(url);
-    let history = getCookie(KEY_URL_HISTORY);
-    if (history !== '') {
-        const p = history.split(HISTORY_DELIMITER);
-        p.push(page)
-        history = p.join(HISTORY_DELIMITER)
-    } else {
-        history = page;
-    }
-    setCookie(KEY_URL_HISTORY, history);
+    STORAGE.get(KEY)
+        .then(results => {
+            const history = getHistory(url, results[KEY]);
+            STORAGE.set({[KEY]: JSON.stringify(history)}).then();
+        })
 }
 
-function initHistory() {
-    setCookie(KEY_URL_HISTORY, '');
-}
-
-export {goBack, initHistory, writeHistory}
+export {goBack, writeHistory}

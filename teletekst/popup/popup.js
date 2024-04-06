@@ -2,7 +2,7 @@ import {
     initNewsLines,
     prepareNavigationList,
 } from "./newsLines.js";
-import {goBack, initHistory, writeHistory} from "./history.js";
+import {goBack, writeHistory} from "./history.js";
 import {config} from "./config.js";
 import {makeExternalLinks} from "./externalLinks.js";
 import {handleKeyInput, isNumber} from "./keyinput.js";
@@ -117,8 +117,7 @@ function init(url) {
         .catch(err => console.error(err));
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    initHistory();
+document.addEventListener('DOMContentLoaded', () => {
     init(config.teletekstStart);
 });
 document.onkeydown = function (event) {

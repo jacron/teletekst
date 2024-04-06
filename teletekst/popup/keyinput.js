@@ -53,7 +53,9 @@ function followLinks(e, resolve) {
 function handleMetaKey(e, resolve) {
     if (e.metaKey) {
         if (e.key === '[') {
-            goBack().then(url => resolve(url));
+            goBack()
+                .then(url => resolve(url))
+                .catch(err => console.log(err));
             e.preventDefault();
         }
     }

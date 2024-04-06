@@ -12,5 +12,9 @@ export const config = {
         [' documentaire ', 228],
         [' weer ', 702],
     ],
-    useOptionalLinks: true
+    useOptionalLinks: true,
+    storageKey: {
+        history: 'history',
+        onderregel: 'onderregel'
+    },
 }

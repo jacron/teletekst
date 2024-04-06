@@ -1,11 +1,11 @@
 {
-  "name": "Teletekst",
+  "name": "TeletekstView",
   "description": "ipv popup",
   "version": "3.0",
   "author": "Jan H Croonen",
   "permissions": [
     "activeTab",
-    "scripting"
+    "storage"
   ],
   "host_permissions": [
     "https://teletekst-data.nos.nl/*"

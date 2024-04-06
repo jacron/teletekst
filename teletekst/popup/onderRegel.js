@@ -6,17 +6,20 @@ const onderRegelLinks = [
 const KEY = config.storageKey.onderregel;
 const STORAGE = chrome.storage.local;
 
-function replaceLinks() {
-    STORAGE.get(KEY, storedOpties => {
-        if (storedOpties) {
-            const opties = JSON.parse(storedOpties[KEY]);
-            for (let i = 0; i < onderRegelLinks.length; i++) {
-                const link = document.getElementById(onderRegelLinks[i]);
-                link.textContent = opties[i][0];
-                link.href = '/webplus?p=' + opties[i][1];
+function adjustOnderregel() {
+    return new Promise((resolve) => {
+        STORAGE.get(KEY, storedOpties => {
+            if (storedOpties) {
+                const opties = JSON.parse(storedOpties[KEY]);
+                for (let i = 0; i < onderRegelLinks.length; i++) {
+                    const link = document.getElementById(onderRegelLinks[i]);
+                    link.textContent = opties[i][0];
+                    link.setAttribute('href', '/webplus?p=' + opties[i][1]);
+                }
             }
-        }
+            resolve();
+        })
     })
 }
 
-export {replaceLinks}
+export {adjustOnderregel}

@@ -29,3 +29,7 @@ input.pagenr {
 a {
     cursor: pointer;
 }
+#saved-message {
+    display: none;
+    color: green;
+}

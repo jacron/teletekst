@@ -51,8 +51,13 @@ function save(e) {
     }
     STORAGE.set({[KEY]: JSON.stringify(optionalLinks)}).then(() => {
         showOnderregelPreview();
+        const msg = document.getElementById('saved-message');
+        msg.style.display = 'inline-block';
+        setTimeout(() => {
+            msg.style.display = 'none';
+        }, 5000)
     });
-    return true;
+
 }
 
 function showOnderregelPreview() {

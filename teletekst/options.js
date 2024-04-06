@@ -1,7 +1,7 @@
 import {config} from "./popup/config.js";
 
 const KEY = config.storageKey.onderregel;
-const STORAGE = chrome.storage.session;
+const STORAGE = chrome.storage.local;
 
 let optionalLinks = [
         [' nieuws ', '101'],

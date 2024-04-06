@@ -2,16 +2,24 @@ input.pagenr {
     width: 50px;
 }
 .red {
-    color: #f00
+    color: #f00;
 }
 .green {
-    color: #0f0
+    color: #0f0;
 }
 .yellow {
-    color: #ff0
+    color: #ff0;
 }
 .cyan {
-    color: #0ff
+    color: #0ff;
+}
+.bg-blue {
+    background: #00f;
+    color: #fff;
+}
+.bg-blue a {
+    color: #fff;
+    text-decoration: none;
 }
 #onderregel {
     background-color: black;

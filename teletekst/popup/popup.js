@@ -3,10 +3,10 @@ import {
     prepareNavigationList,
 } from "./newsLines.js";
 import {goBack, writeHistory} from "./history.js";
-import {config} from "./config.js";
+import {config} from "../config.js";
 import {makeExternalLinks} from "./externalLinks.js";
 import {handleKeyInput, isNumber} from "./keyinput.js";
-import {adjustOnderregel} from "./onderRegel.js";
+import {adjustOnderregel, getOnderregelState} from "./onderRegel.js";
 
 function adjustOneLink(link) {
     const href = link.getAttribute('href');
@@ -98,7 +98,13 @@ function inject(text) {
     container.innerHTML = HTMLDocument.body.innerHTML;
     removeOriginalScript(container);
     initNewsLines();
-    adjustOnderregel().then(() => adjustLinks());
+    getOnderregelState().then(state => {
+        if (state) {
+            adjustOnderregel().then(() => adjustLinks());
+        } else {
+            adjustLinks();
+        }
+    })
     makeExternalLinks();
     hideControls();
     prepareNavigationList();

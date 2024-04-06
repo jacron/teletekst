@@ -1,6 +1,7 @@
-import {config} from "./popup/config.js";
+import {config} from "./config.js";
 
 const KEY = config.storageKey.onderregel;
+const KEYSTATE = config.storageKey.onderregelAan;
 const STORAGE = chrome.storage.local;
 
 let optionalLinks = [
@@ -49,6 +50,8 @@ function save(e) {
         link[0] = kolommen[0].querySelector('input').value;
         link[1] = kolommen[1].querySelector('input').value;
     }
+    const state = document.getElementById('state').checked;
+    STORAGE.set({[KEYSTATE]: JSON.stringify(state)}).then();
     STORAGE.set({[KEY]: JSON.stringify(optionalLinks)}).then(() => {
         showOnderregelPreview();
         const msg = document.getElementById('saved-message');
@@ -98,6 +101,9 @@ STORAGE.get(KEY, results => {
     showLength();
     showOnderregelPreview();
     handelChanges();
+})
+STORAGE.get(KEYSTATE, results => {
+    document.getElementById('state').checked = JSON.parse(results[KEYSTATE]);
 })
 document.forms[0].onsubmit = save;
 

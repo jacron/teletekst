@@ -1,7 +1,7 @@
 import {goBack} from "./history.js";
 import {navigateFirst,
     navigateInto, navigateLast, nextLine, prevLine} from "./newsLines.js";
-import {config} from "./config.js";
+import {config} from "../config.js";
 
 function followLinks(e, resolve) {
     const btns_pager = document.querySelectorAll('a[data-pager]');

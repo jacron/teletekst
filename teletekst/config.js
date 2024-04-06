@@ -9,6 +9,7 @@ export const config = {
     useOptionalLinks: true,
     storageKey: {
         history: 'history',
-        onderregel: 'onderregel'
+        onderregel: 'onderregel',
+        onderregelAan: 'onderregelAan'
     },
 }

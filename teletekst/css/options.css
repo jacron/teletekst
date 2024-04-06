@@ -1,0 +1,23 @@
+input.pagenr {
+    width: 50px;
+}
+.red {
+    color: #f00
+}
+.green {
+    color: #0f0
+}
+.yellow {
+    color: #ff0
+}
+.cyan {
+    color: #0ff
+}
+#onderregel {
+    background-color: black;
+    width: 100%;
+    font-size: 14px;
+}
+a {
+    cursor: pointer;
+}

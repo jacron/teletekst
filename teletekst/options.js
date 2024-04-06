@@ -53,7 +53,7 @@ function save(e) {
     const state = document.getElementById('state').checked;
     STORAGE.set({[KEYSTATE]: JSON.stringify(state)}).then();
     STORAGE.set({[KEY]: JSON.stringify(optionalLinks)}).then(() => {
-        showOnderregelPreview();
+        showOnderregelPreview(state);
         const msg = document.getElementById('saved-message');
         msg.style.display = 'inline-block';
         setTimeout(() => {

@@ -22,8 +22,10 @@ function adjustOnderregel() {
                     const opties = JSON.parse(storedOpties[KEY]);
                     for (let i = 0; i < onderRegelLinks.length; i++) {
                         const link = document.getElementById(onderRegelLinks[i]);
-                        link.textContent = opties[i][0];
-                        link.setAttribute('href', '/webplus?p=' + opties[i][1]);
+                        if (link) {
+                            link.textContent = opties[i][0];
+                            link.setAttribute('href', '/webplus?p=' + opties[i][1]);
+                        }
                     }
                 }
                 resolve();

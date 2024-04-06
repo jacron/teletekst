@@ -63,15 +63,29 @@ function save(e) {
 
 }
 
-function showOnderregelPreview() {
+function showOnderregelPreview(useCustom) {
     const fastIds = ['fastText1', 'fastText2', 'fastText3', 'fastText4'];
-    for (let i = 0; i < optionalLinks.length; i++) {
-        const link = optionalLinks[i];
-        const fast = document.getElementById(fastIds[i]);
-        fast.textContent = link[0];
-        fast.onclick = (e) => {
-            e.preventDefault();
-            open(config.teletekstPagina + link[1], '_blank');
+    if (useCustom) {
+        for (let i = 0; i < optionalLinks.length; i++) {
+            const link = optionalLinks[i];
+            const fast = document.getElementById(fastIds[i]);
+            fast.style.display = 'inline-block';
+            fast.textContent = link[0];
+            fast.onclick = (e) => {
+                e.preventDefault();
+                open(config.teletekstPagina + link[1], '_blank');
+            }
+        }
+        for (let span of document.querySelectorAll('.deflt')) {
+            span.style.display = 'none';
+        }
+    } else {
+        for (let i = 0; i < fastIds.length; i++) {
+            const fast = document.getElementById(fastIds[i]);
+            fast.style.display = 'none';
+        }
+        for (let span of document.querySelectorAll('.deflt')) {
+            span.style.display = 'inline-block';
         }
     }
 }
@@ -94,16 +108,19 @@ function handelChanges() {
             }
         }
     }
-}
+    document.getElementById('state').onchange = (e) => {
+        showOnderregelPreview(e.target.checked);
+    }}
 
 STORAGE.get(KEY, results => {
     showOpties(results[KEY]);
     showLength();
-    showOnderregelPreview();
     handelChanges();
 })
 STORAGE.get(KEYSTATE, results => {
-    document.getElementById('state').checked = JSON.parse(results[KEYSTATE]);
+    const checked = JSON.parse(results[KEYSTATE]);
+    document.getElementById('state').checked = checked;
+    showOnderregelPreview(checked);
 })
 document.forms[0].onsubmit = save;
 

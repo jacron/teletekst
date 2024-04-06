@@ -64,6 +64,9 @@ function save(e) {
 }
 
 function showOnderregelPreview(useCustom) {
+    if (!useCustom) {
+        useCustom = document.getElementById('state').checked;
+    }
     const fastIds = ['fastText1', 'fastText2', 'fastText3', 'fastText4'];
     if (useCustom) {
         for (let i = 0; i < optionalLinks.length; i++) {
@@ -100,8 +103,6 @@ function handelChanges() {
         for (let j = 0; j < kolommen.length; j++) {
             const input = kolommen[j].querySelector('input');
             input.oninput = () => {
-                console.log(input)
-                console.log(link[j])
                 link[j] = input.value;
                 showOnderregelPreview();
                 showLength();

@@ -26,8 +26,8 @@ function adjustOnderregel() {
                         link.setAttribute('href', '/webplus?p=' + opties[i][1]);
                     }
                 }
+                resolve();
             })
-        resolve();
     })
 }
 

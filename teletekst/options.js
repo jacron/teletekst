@@ -113,15 +113,15 @@ function handelChanges() {
         showOnderregelPreview(e.target.checked);
     }}
 
-STORAGE.get(KEY, results => {
+STORAGE.get([KEY, KEYSTATE], results => {
     showOpties(results[KEY]);
     showLength();
     handelChanges();
+    if (results) {
+        document.getElementById('state').checked = JSON.parse(results[KEYSTATE]);
+    }
+    showOnderregelPreview();
 })
-STORAGE.get(KEYSTATE, results => {
-    const checked = JSON.parse(results[KEYSTATE]);
-    document.getElementById('state').checked = checked;
-    showOnderregelPreview(checked);
-})
+
 document.forms[0].onsubmit = save;
 

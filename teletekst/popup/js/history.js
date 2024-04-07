@@ -1,6 +1,6 @@
 /* Back-navigation, using a history, stored in session-storage. */
 
-import {config} from "../config.js";
+import {config} from "../../config.js";
 
 const KEY = config.storageKey.history;
 const STORAGE = chrome.storage.session;

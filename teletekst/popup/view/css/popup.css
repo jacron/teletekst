@@ -20,3 +20,9 @@ a.external-link:hover {
 .newsline.active {
     color: white;
 }
+#message {
+    position: absolute;
+    top: 44px;
+    left: 18px;
+    font-style: italic;
+}

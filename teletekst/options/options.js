@@ -1,4 +1,4 @@
-import {config} from "./config.js";
+import {config} from "../config.js";
 
 const KEY = config.storageKey.onderregel;
 const KEYSTATE = config.storageKey.onderregelAan;

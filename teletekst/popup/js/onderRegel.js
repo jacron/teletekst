@@ -1,4 +1,4 @@
-import {config} from "../config.js";
+import {config} from "../../config.js";
 
 const onderRegelLinks = [
     'fastText1Red', 'fastText2Green', 'fastText3Yellow','fastText4Blue',

@@ -1,5 +1,5 @@
 import {isNumber} from "./keyinput.js";
-import {config} from "../config.js";
+import {config} from "../../config.js";
 
 function handleOneInternalLink(e, link, init, href) {
     const isBlauwNummer = link.classList.contains('cyan') && isNumber(link.textContent);

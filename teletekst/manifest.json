@@ -18,10 +18,10 @@
   "action": {
     "default_icon": "images/teletekst2 16.png",
     "default_title": "Teletekst",
-    "default_popup": "popup/popup.html"
+    "default_popup": "popup/view/popup.html"
   },
   "options_ui": {
-    "page": "options.html"
+    "page": "options/options.html"
   },
   "commands": {
     "_execute_action": {

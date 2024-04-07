@@ -3,7 +3,7 @@ import {
     prepareNavigationList,
 } from "./newsLines.js";
 import {goBack, writeHistory} from "./history.js";
-import {config} from "../config.js";
+import {config} from "../../config.js";
 import {makeExternalLinks} from "./externalLinks.js";
 import {handleKeyInput} from "./keyinput.js";
 import {adjustOnderregel} from "./onderRegel.js";
@@ -61,11 +61,20 @@ function inject(text) {
     })
 }
 
+function showMessage(visible) {
+    document.getElementById('message').style.display =
+        visible? 'block' : 'none';
+}
+
 function init(url) {
+    showMessage(true);
     writeHistory(url);
     fetch(url + queryAgainstCaching(), {mode: 'no-cors'})
         .then(res => res.text())
-        .then(text => inject(text))
+        .then(text => {
+            inject(text);
+            showMessage(false);
+        })
         .catch(err => console.error(err));
 }
 

@@ -11,8 +11,8 @@ let optionalLinks = [
         [' weer ', '702'],
     ]
 
-function showOpties(storedOpties) {
-    const opties = storedOpties? JSON.parse(storedOpties) : optionalLinks;
+function showOpties(results) {
+    const opties = results? JSON.parse(results[KEY]) : optionalLinks;
     optionalLinks = opties;
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
@@ -111,15 +111,20 @@ function handelChanges() {
     }
     document.getElementById('state').onchange = (e) => {
         showOnderregelPreview(e.target.checked);
-    }}
+    }
+}
 
-STORAGE.get([KEY, KEYSTATE], results => {
-    showOpties(results[KEY]);
-    showLength();
-    handelChanges();
+function checkState(results) {
     if (results) {
         document.getElementById('state').checked = JSON.parse(results[KEYSTATE]);
     }
+}
+
+STORAGE.get([KEY, KEYSTATE], results => {
+    showOpties(results);
+    showLength();
+    handelChanges();
+    checkState(results);
     showOnderregelPreview();
 })
 

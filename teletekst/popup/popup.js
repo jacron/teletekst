@@ -5,52 +5,11 @@ import {
 import {goBack, writeHistory} from "./history.js";
 import {config} from "../config.js";
 import {makeExternalLinks} from "./externalLinks.js";
-import {handleKeyInput, isNumber} from "./keyinput.js";
-import {adjustOnderregel, getOnderregelState} from "./onderRegel.js";
+import {handleKeyInput} from "./keyinput.js";
+import {adjustOnderregel} from "./onderRegel.js";
+import {handleInternalLinks} from "./handleInternalLinks.js";
 
-function adjustOneLink(link) {
-    const href = link.getAttribute('href');
-    if (href && href.startsWith('/')) {
-        link.addEventListener('click', e => {
-            const isBlauwNummer = link.classList.contains('cyan') && isNumber(link.textContent);
-            if (isBlauwNummer) {
-                alert(config.msgBlauwNietOproepbaar);
-            } else {
-                let url = config.teletekstHome + href;
-                /* 'pagina niet gevonden'? */
-                if (href.indexOf('?p') === -1) {
-                    url = config.teletekstStart;
-                }
-                init(url);
-            }
-            e.preventDefault();
-            return true;
-        })
-    }
-}
-
-function adjustLinks() {
-    const links = document.body.getElementsByTagName('a');
-    for (let link of links) {
-        adjustOneLink(link)
-    }
-}
-
-function keydownListener(e) {
-    const bindings = [
-        ['F1', 'fastText1Red'],
-        ['F2', 'fastText2Green'],
-        ['F3', 'fastText3Yellow'],
-        ['F4', 'fastText4Blue']
-    ]
-    for (let binding of bindings) {
-        const [key, id] = binding;
-        if (key === e.key) {
-            const link = document.getElementById(id);
-            link.click();
-        }
-    }
-}
+const STORAGE = chrome.storage.local;
 
 function hideControls() {
     document.querySelector('.font-control').style.display = 'none';
@@ -83,35 +42,23 @@ function handleBack() {
     })
 }
 
-/* Het originele script verwijderen is niet echt nodig, daar de src niet werkt zo.
-Het maakt de source echter functioneel duidelijker. */
-function removeOriginalScript(container) {
-    let script = container.querySelector('script');
-    // console.log(script)  // src=/webplus.html/v6/teletekst-txt.min.js
-    container.removeChild(script);
-}
-
 function inject(text) {
     const parser = new DOMParser();
     const HTMLDocument = parser.parseFromString(text, 'text/html');
     const container = document.getElementById('container');
     container.innerHTML = HTMLDocument.body.innerHTML;
-    removeOriginalScript(container);
-    initNewsLines();
-    getOnderregelState().then(state => {
-        if (state) {
-            adjustOnderregel().then(() => adjustLinks());
-        } else {
-            adjustLinks();
-        }
+    const {onderregel, onderregelAan} = config.storageKey;
+    STORAGE.get([onderregel, onderregelAan], storedOpties => {
+        initNewsLines();
+        adjustOnderregel(storedOpties);
+        handleInternalLinks(init);
+        makeExternalLinks();
+        hideControls();
+        prepareNavigationList();
+        handleSubmit();
+        handleBack();
+        document.getElementById('navi').focus();
     })
-    makeExternalLinks();
-    hideControls();
-    prepareNavigationList();
-    container.addEventListener('keydown', keydownListener);
-    handleSubmit();
-    handleBack();
-    document.getElementById('navi').focus();
 }
 
 function init(url) {

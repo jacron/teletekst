@@ -1,8 +1,5 @@
 import {config} from "../../config.js";
 
-const onderRegelLinks = [
-    'fastText1Red', 'fastText2Green', 'fastText3Yellow','fastText4Blue',
-]
 const fKeyBindings = [
     ['F1', 'fastText1Red'],
     ['F2', 'fastText2Green'],
@@ -29,8 +26,8 @@ function injectOnderregel() {
 }
 
 function customizeOnderregel(opties) {
-    for (let i = 0; i < onderRegelLinks.length; i++) {
-        const link = document.getElementById(onderRegelLinks[i]);
+    for (let i = 0; i < fKeyBindings.length; i++) {
+        const link = document.getElementById(fKeyBindings[i][1]);
         link.textContent = opties[i][0];
         link.setAttribute('href', '/webplus?p=' + opties[i][1]);
     }
@@ -41,7 +38,7 @@ function _adjustOnderregel(storedOpties) {
     const opties = storedOpties[onderregel];
     const state = storedOpties[onderregelAan];
     if (state && opties) {
-        if (!document.getElementById(onderRegelLinks[0])) {
+        if (!document.getElementById(fKeyBindings[0][1])) {
             injectOnderregel();
         }
         customizeOnderregel(JSON.parse(opties));

@@ -40,6 +40,9 @@ function showOpties(results) {
 
 function showLength() {
     let length = 0;
+    if (!opties) {
+        return;
+    }
     for (let optie of opties) {
         length += optie[0].length;
     }
@@ -81,18 +84,20 @@ function showOnderregelPreview(useCustom) {
         useCustom = document.getElementById('state').checked;
     }
     if (useCustom) {
-        for (let i = 0; i < opties.length; i++) {
-            const optie = opties[i];
-            const fast = document.getElementById(fastIds[i]);
-            fast.style.display = 'inline-block';
-            fast.textContent = optie[0];
-            fast.onclick = (e) => {
-                e.preventDefault();
-                open(config.teletekstPagina + optie[1], '_blank');
+        if (opties) {
+            for (let i = 0; i < opties.length; i++) {
+                const optie = opties[i];
+                const fast = document.getElementById(fastIds[i]);
+                fast.style.display = 'inline-block';
+                fast.textContent = optie[0];
+                fast.onclick = (e) => {
+                    e.preventDefault();
+                    open(config.teletekstPagina + optie[1], '_blank');
+                }
             }
-        }
-        for (let span of document.querySelectorAll('.deflt')) {
-            span.style.display = 'none';
+            for (let span of document.querySelectorAll('.deflt')) {
+                span.style.display = 'none';
+            }
         }
     } else {
         for (let i = 0; i < fastIds.length; i++) {
@@ -108,14 +113,13 @@ function showOnderregelPreview(useCustom) {
 function handleChanges() {
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
-    for (let i = 0; i < opties.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        const optie = opties[i];
         const kolommen = row.querySelectorAll('td');
         for (let j = 0; j < kolommen.length; j++) {
             const input = kolommen[j].querySelector('input');
             input.oninput = () => {
-                optie[j] = input.value;
+                opties[i][j] = input.value;
                 showOnderregelPreview();
                 showLength();
             }
@@ -130,6 +134,7 @@ function handleButtonClicks() {
     document.getElementById('cmd-use-defaults').addEventListener('click', () => {
         opties = optionalLinks;
         _showOpties();
+        showOnderregelPreview();
         document.getElementById('optional-defaults').style.display = 'none';
     })
 }

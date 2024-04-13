@@ -6,7 +6,7 @@ import {goBack, writeHistory} from "./history.js";
 import {config} from "../../config.js";
 import {makeExternalLinks} from "./externalLinks.js";
 import {handleKeyInput} from "./keyinput.js";
-import {adjustOnderregel} from "./onderRegel.js";
+import {adjustOnderregel, initOnderregel} from "./onderRegel.js";
 import {handleInternalLinks} from "./handleInternalLinks.js";
 
 const STORAGE = chrome.storage.local;
@@ -47,8 +47,7 @@ function inject(text) {
     const HTMLDocument = parser.parseFromString(text, 'text/html');
     const container = document.getElementById('container');
     container.innerHTML = HTMLDocument.body.innerHTML;
-    const {onderregel, onderregelAan} = config.storageKey;
-    STORAGE.get([onderregel, onderregelAan], storedOpties => {
+    initOnderregel().then(storedOpties => {
         initNewsLines();
         adjustOnderregel(storedOpties);
         handleInternalLinks(init);

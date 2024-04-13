@@ -1,8 +1,10 @@
 import {config} from "../config.js";
+import {initOnderregel} from "../popup/js/onderRegel.js";
 
 const KEY = config.storageKey.onderregel;
 const KEYSTATE = config.storageKey.onderregelAan;
 const STORAGE = chrome.storage.local;
+const PROMPT = 'Er zijn nog geen links ingevuld. Zal ik iets voor u invullen? Ze gelden pas als u ze opslaat.';
 
 let optionalLinks = [
         [' nieuws ', '101'],
@@ -12,7 +14,14 @@ let optionalLinks = [
     ]
 
 function showOpties(results) {
-    const opties = results? JSON.parse(results[KEY]) : optionalLinks;
+    let opties;
+    if (results[KEY] === undefined) {
+        if (confirm(PROMPT)) {
+            opties = optionalLinks;
+        }
+    } else {
+        opties = JSON.parse(results[KEY]);
+    }
     optionalLinks = opties;
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
@@ -115,18 +124,20 @@ function handelChanges() {
 }
 
 function checkState(results) {
-    if (results) {
+    if (results[KEYSTATE]) {
         document.getElementById('state').checked = JSON.parse(results[KEYSTATE]);
     }
 }
 
-STORAGE.get([KEY, KEYSTATE], results => {
-    showOpties(results);
-    showLength();
-    handelChanges();
-    checkState(results);
-    showOnderregelPreview();
-})
+initOnderregel()
+    .then(results => {
+        showOpties(results);
+        showLength();
+        handelChanges();
+        checkState(results);
+        showOnderregelPreview();
+    })
+    .catch(err => console.log(err));
 
 document.forms[0].onsubmit = save;
 

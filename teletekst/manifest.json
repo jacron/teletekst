@@ -4,7 +4,6 @@
   "version": "3.0",
   "author": "Jan H Croonen",
   "permissions": [
-    "activeTab",
     "storage"
   ],
   "host_permissions": [

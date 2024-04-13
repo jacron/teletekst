@@ -10,6 +10,9 @@ const onderregelTemplate = `<pre>
 <span class="red "><a id="fastText1Red" class="red" href="/webplus?p=101"> nieuws </a></span><span class="green "><a id="fastText2Green" class="green" href="/webplus?p=102"> binnenland </a></span><span class="yellow "><a id="fastText3Yellow" class="yellow" href="/webplus?p=103"> buitenland </a></span><span class="cyan "><a id="fastText4Blue" class="cyan" href="/webplus?p=601"> sport  </a></span>
 </pre>`;
 const defaultOptiesString = '[[" nieuws","101"],[" actualiteiten ","220"],["documentaire  ","228"],["weer ","702"]]';
+const STORAGE = chrome.storage.local;
+const KEY = config.storageKey.onderregel;
+const KEYSTATE = config.storageKey.onderregelAan;
 
 function fKeydownListener(e) {
     for (let binding of fKeyBindings) {
@@ -39,7 +42,6 @@ function _adjustOnderregel(opties, state) {
         if (!document.getElementById(fKeyBindings[0][1])) {
             injectOnderregel();
         }
-        console.log(opties)
         customizeOnderregel(JSON.parse(opties));
     }
     document.getElementById('container')
@@ -53,9 +55,8 @@ function adjustOnderregel(storedOpties) {
     if (opties !== undefined) {
         _adjustOnderregel(opties, state);
     } else {
-        state = false;
-        opties = defaultOptiesString;
-        _adjustOnderregel(opties, state)
+        STORAGE.set({[KEYSTATE]: JSON.stringify(false)}).then();
+        STORAGE.set({[KEY]: JSON.stringify(defaultOptiesString)}).then();
     }
 }
 

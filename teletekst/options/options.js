@@ -4,40 +4,44 @@ import {initOnderregel} from "../popup/js/onderRegel.js";
 const KEY = config.storageKey.onderregel;
 const KEYSTATE = config.storageKey.onderregelAan;
 const STORAGE = chrome.storage.local;
-const PROMPT = 'Er zijn nog geen links ingevuld. Zal ik iets voor u invullen? Ze gelden pas als u ze opslaat.';
 
-let optionalLinks = [
+const fastIds = ['fastText1', 'fastText2', 'fastText3', 'fastText4'];
+const optionalLinks = [
         [' nieuws ', '101'],
         [' actualiteit ', '220'],
         [' documentaire ', '228'],
         [' weer ', '702'],
     ]
 
+let opties;
+
+function _showOpties() {
+    const optiesTable = document.getElementById('onderregelOpties');
+    const rows = optiesTable.querySelectorAll('tr');
+    for (let i = 0; i < opties.length; i++) {
+        const row = rows[i];
+        const optie = opties[i];
+        const kolommen = row.querySelectorAll('td');
+        kolommen[0].querySelector('input').value = optie[0];
+        kolommen[1].querySelector('input').value = optie[1];
+    }
+}
+
 function showOpties(results) {
-    let opties;
     if (results[KEY] === undefined) {
-        if (confirm(PROMPT)) {
-            opties = optionalLinks;
-        }
+        document.getElementById('optional-defaults').style.display = 'block';
     } else {
         opties = JSON.parse(results[KEY]);
     }
-    optionalLinks = opties;
-    const optiesTable = document.getElementById('onderregelOpties');
-    const rows = optiesTable.querySelectorAll('tr');
-    for (let i = 0; i < optionalLinks.length; i++) {
-        const row = rows[i];
-        const link = opties[i];
-        const kolommen = row.querySelectorAll('td');
-        kolommen[0].querySelector('input').value = link[0];
-        kolommen[1].querySelector('input').value = link[1];
+    if (opties) {
+        _showOpties();
     }
 }
 
 function showLength() {
     let length = 0;
-    for (let i = 0; i < optionalLinks.length; i++) {
-        length += optionalLinks[i][0].length;
+    for (let optie of opties) {
+        length += optie[0].length;
     }
     const totalLength = document.getElementById('totalLength');
     totalLength.textContent = length.toString();
@@ -52,16 +56,16 @@ function save(e) {
     e.preventDefault();
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
-    for (let i = 0; i < optionalLinks.length; i++) {
+    for (let i = 0; i < opties.length; i++) {
         const row = rows[i];
-        const link = optionalLinks[i];
+        const optie = opties[i];
         const kolommen = row.querySelectorAll('td');
-        link[0] = kolommen[0].querySelector('input').value;
-        link[1] = kolommen[1].querySelector('input').value;
+        optie[0] = kolommen[0].querySelector('input').value;
+        optie[1] = kolommen[1].querySelector('input').value;
     }
     const state = document.getElementById('state').checked;
     STORAGE.set({[KEYSTATE]: JSON.stringify(state)}).then();
-    STORAGE.set({[KEY]: JSON.stringify(optionalLinks)}).then(() => {
+    STORAGE.set({[KEY]: JSON.stringify(opties)}).then(() => {
         showOnderregelPreview(state);
         const msg = document.getElementById('saved-message');
         msg.style.display = 'inline-block';
@@ -76,16 +80,15 @@ function showOnderregelPreview(useCustom) {
     if (!useCustom) {
         useCustom = document.getElementById('state').checked;
     }
-    const fastIds = ['fastText1', 'fastText2', 'fastText3', 'fastText4'];
     if (useCustom) {
-        for (let i = 0; i < optionalLinks.length; i++) {
-            const link = optionalLinks[i];
+        for (let i = 0; i < opties.length; i++) {
+            const optie = opties[i];
             const fast = document.getElementById(fastIds[i]);
             fast.style.display = 'inline-block';
-            fast.textContent = link[0];
+            fast.textContent = optie[0];
             fast.onclick = (e) => {
                 e.preventDefault();
-                open(config.teletekstPagina + link[1], '_blank');
+                open(config.teletekstPagina + optie[1], '_blank');
             }
         }
         for (let span of document.querySelectorAll('.deflt')) {
@@ -102,17 +105,17 @@ function showOnderregelPreview(useCustom) {
     }
 }
 
-function handelChanges() {
+function handleChanges() {
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
-    for (let i = 0; i < optionalLinks.length; i++) {
+    for (let i = 0; i < opties.length; i++) {
         const row = rows[i];
-        const link = optionalLinks[i];
+        const optie = opties[i];
         const kolommen = row.querySelectorAll('td');
         for (let j = 0; j < kolommen.length; j++) {
             const input = kolommen[j].querySelector('input');
             input.oninput = () => {
-                link[j] = input.value;
+                optie[j] = input.value;
                 showOnderregelPreview();
                 showLength();
             }
@@ -121,6 +124,14 @@ function handelChanges() {
     document.getElementById('state').onchange = (e) => {
         showOnderregelPreview(e.target.checked);
     }
+}
+
+function handleButtonClicks() {
+    document.getElementById('cmd-use-defaults').addEventListener('click', () => {
+        opties = optionalLinks;
+        _showOpties();
+        document.getElementById('optional-defaults').style.display = 'none';
+    })
 }
 
 function checkState(results) {
@@ -133,7 +144,8 @@ initOnderregel()
     .then(results => {
         showOpties(results);
         showLength();
-        handelChanges();
+        handleChanges();
+        handleButtonClicks();
         checkState(results);
         showOnderregelPreview();
     })

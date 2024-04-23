@@ -38,6 +38,7 @@ function followLinks(e, resolve) {
             e.preventDefault();
             navigateLast();
             break;
+        case ' ':
         case 'Enter':
             navigateInto(e);
             break;

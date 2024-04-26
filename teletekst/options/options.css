@@ -33,6 +33,6 @@ a {
     display: none;
     color: green;
 }
-/*.deflt {*/
-/*    display: none;*/
-/*}*/
+#home-link {
+    float: right;
+}

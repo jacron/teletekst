@@ -26,3 +26,15 @@ a.external-link:hover {
     left: 18px;
     font-style: italic;
 }
+#help {
+    position: absolute;
+    bottom: -14px;
+    left: 0;
+    display: none;
+}
+#help a {
+    text-decoration: none;
+}
+#help a:hover {
+    text-decoration: underline;
+}

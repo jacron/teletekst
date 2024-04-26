@@ -13,6 +13,7 @@
     <tr><td>Pijl links/Page Up</td><td>Vorige bladzijde</td></tr>
     <tr><td>Pijl omlaag</td><td>Volgende subbladzijde/Volgend nieuwsitem</td></tr>
     <tr><td>Pijl omhoog</td><td>Vorige subbladzijde/Vorig nieuwsitem</td></tr>
+    <tr><td>Enter/spatie</td><td>Nieuwsitem openen</td></tr>
 </table>
 <h2>Koppelingen voor de onderregel</h2>
 <p>Gebruik spaties om op te vullen.</p>
@@ -21,17 +22,25 @@
 </p>
 <form>
     <table id="onderregelOpties">
-        <tr><td><input type="text"></td>
+        <tr>
+            <td>F1</td>
+            <td><input type="text" class="caption"></td>
             <td><input type="number" maxlength="3" class="pagenr"></td></tr>
-        <tr><td><input type="text"></td>
+        <tr>
+            <td>F2</td>
+            <td><input type="text" class="caption"></td>
             <td><input type="number" maxlength="3" class="pagenr"></td></tr>
-        <tr><td><input type="text"></td>
+        <tr>
+            <td>F3</td>
+            <td><input type="text" class="caption"></td>
             <td><input type="number" maxlength="3" class="pagenr"></td></tr>
-        <tr><td><input type="text"></td>
+        <tr>
+            <td>F4</td>
+            <td><input type="text" class="caption"></td>
             <td><input type="number" maxlength="3" class="pagenr"></td></tr>
     </table>
     <input type="checkbox" name="state" id="state" checked>
-    <label for="state">Deze waarden gebruiken</label>
+    <label for="state">Deze waarden op iedere pagina gebruiken</label>
     <input type="submit" value="Bewaren">&nbsp;<span id="saved-message">Instellingen zijn bewaard.</span>
 </form>
 <p>

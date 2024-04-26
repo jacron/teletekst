@@ -22,8 +22,8 @@ function _showOpties() {
         const row = rows[i];
         const optie = opties[i];
         const kolommen = row.querySelectorAll('td');
-        kolommen[0].querySelector('input').value = optie[0];
-        kolommen[1].querySelector('input').value = optie[1];
+        kolommen[1].querySelector('input').value = optie[0];
+        kolommen[2].querySelector('input').value = optie[1];
     }
 }
 
@@ -63,8 +63,8 @@ function save(e) {
         const row = rows[i];
         const optie = opties[i];
         const kolommen = row.querySelectorAll('td');
-        optie[0] = kolommen[0].querySelector('input').value;
-        optie[1] = kolommen[1].querySelector('input').value;
+        optie[0] = kolommen[1].querySelector('input').value;
+        optie[1] = kolommen[2].querySelector('input').value;
     }
     const state = document.getElementById('state').checked;
     STORAGE.set({[KEYSTATE]: JSON.stringify(state)}).then();
@@ -115,14 +115,17 @@ function handleChanges() {
     const rows = optiesTable.querySelectorAll('tr');
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        const kolommen = row.querySelectorAll('td');
-        for (let j = 0; j < kolommen.length; j++) {
-            const input = kolommen[j].querySelector('input');
-            input.oninput = () => {
-                opties[i][j] = input.value;
-                showOnderregelPreview();
-                showLength();
-            }
+        const captionInput = row.querySelector('.caption');
+        const pageNrInput = row.querySelector('.pagenr');
+        captionInput.oninput = () => {
+            opties[i][0] = captionInput.value;
+            showOnderregelPreview();
+            showLength();
+        }
+        pageNrInput.oninput = () => {
+            opties[i][1] = pageNrInput.value;
+            showOnderregelPreview();
+            showLength();
         }
     }
     document.getElementById('state').onchange = (e) => {

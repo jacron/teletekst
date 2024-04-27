@@ -29,7 +29,7 @@ a.external-link:hover {
 #help {
     position: absolute;
     top: 0;
-    left: -12px;
+    right: 7px;
     padding: 0 8px;
     border-radius: 4px;
     background: #777;
@@ -41,32 +41,6 @@ a.external-link:hover {
     background-image: -ms-linear-gradient(top, #7d7e7f, #626468);
     background-image: -o-linear-gradient(top, #7d7e7f, #626468);
     background-image: linear-gradient(top, #7d7e7f, #626468);
-}
-.tt-btn {
-    cursor: pointer;
-    float: left;
-    display: block;
-    padding: 0 10px;
-    height: 32px;
-    font: bold 14px/32px Arial;
-    text-shadow: 0 -1px 1px rgba(0, 0, 0, .42);
-    color: #dfe2e7;
-    width: 35px;
-    text-align: center;
-    margin: 0 5px 5px 0;
-    overflow: hidden;
-    border: none;
-    outline: none;
-    background-color: #7d7e7f;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#7d7e7f), to(#626468));
-    background-image: -webkit-linear-gradient(top, #7d7e7f, #626468);
-    background-image: -moz-linear-gradient(top, #7d7e7f, #626468);
-    background-image: -ms-linear-gradient(top, #7d7e7f, #626468);
-    background-image: -o-linear-gradient(top, #7d7e7f, #626468);
-    background-image: linear-gradient(top, #7d7e7f, #626468);
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
 }
 #help {
     text-decoration: none;

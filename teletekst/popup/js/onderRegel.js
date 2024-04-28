@@ -1,15 +1,16 @@
 import {config} from "../../config.js";
 
+const STORAGE = chrome.storage.local;
 const fKeyBindings = [
     ['F1', 'fastText1Red'],
     ['F2', 'fastText2Green'],
     ['F3', 'fastText3Yellow'],
     ['F4', 'fastText4Blue']
 ]
+const fastIds = ['fastText1', 'fastText2', 'fastText3', 'fastText4'];
 const onderregelTemplate = `<pre>
 <span class="red "><a id="fastText1Red" class="red" href="/webplus?p=101"> nieuws </a></span><span class="green "><a id="fastText2Green" class="green" href="/webplus?p=102"> binnenland </a></span><span class="yellow "><a id="fastText3Yellow" class="yellow" href="/webplus?p=103"> buitenland </a></span><span class="cyan "><a id="fastText4Blue" class="cyan" href="/webplus?p=601"> sport  </a></span>
 </pre>`;
-const STORAGE = chrome.storage.local;
 
 function fKeydownListener(e) {
     for (let binding of fKeyBindings) {
@@ -54,4 +55,56 @@ function adjustOnderregel(storedOpties) {
     }
 }
 
-export {adjustOnderregel}
+function fromStorage() {
+    return new Promise((resolve, reject) => {
+        const {onderregel, onderregelAan} = config.storageKey;
+        STORAGE.get([onderregel, onderregelAan], storedOpties => {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+                return;
+            }
+            resolve(storedOpties);
+        })
+    })
+}
+
+function showFast(opties) {
+    console.log(opties.length)
+    for (let i = 0; i < opties.length; i++) {
+        const optie = opties[i];
+        const fast = document.getElementById(fastIds[i]);
+        fast.style.display = 'inline-block';
+        fast.textContent = optie[0];
+        fast.onclick = (e) => {
+            e.preventDefault();
+            open(config.teletekstPagina + optie[1], '_blank');
+        }
+    }
+    for (let span of document.querySelectorAll('.deflt')) {
+        span.style.display = 'none';
+    }
+}
+
+function showDefaults() {
+    for (let i = 0; i < fastIds.length; i++) {
+        const fast = document.getElementById(fastIds[i]);
+        fast.style.display = 'none';
+    }
+    for (let span of document.querySelectorAll('.deflt')) {
+        span.style.display = 'inline-block';
+    }
+}
+
+function showOnderregelPreview(opties) {
+    if (document.getElementById('state').checked) {
+        if (opties) {
+            showFast(opties);
+        } else {
+            showDefaults();
+        }
+    } else {
+        showDefaults();
+    }
+}
+
+export {adjustOnderregel, fromStorage, showOnderregelPreview}

@@ -1,18 +1,16 @@
 import {config} from "../config.js";
+import {fromStorage, showOnderregelPreview} from "../popup/js/onderRegel.js";
 
 const KEY_OPTIONS = config.storageKey.onderregel;
 const KEY_STATE = config.storageKey.onderregelAan;
 const STORAGE = chrome.storage.local;
 
-const fastIds = ['fastText1', 'fastText2', 'fastText3', 'fastText4'];
 const optionalLinks = [
         [' nieuws ', '101'],
         [' actualiteit ', '220'],
         [' documentaire ', '228'],
         [' weer ', '702'],
     ]
-
-// let opties;
 
 function _showOpties(opties) {
     const optiesTable = document.getElementById('onderregelOpties');
@@ -36,14 +34,6 @@ function showMessage(msg) {
     }
 }
 
-function showOpties(opties) {
-    if (opties === undefined) {
-        showMessage('defaults');
-    } else {
-        _showOpties(JSON.parse(opties));
-    }
-}
-
 function showLength(opties) {
     let length = 0;
     if (!opties) {
@@ -61,134 +51,93 @@ function showLength(opties) {
     }
 }
 
-function save(e) {
-    e.preventDefault();
+function optieValuesFromTable() {
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
     const opties = [];
-    for (let i = 0; i < opties.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
+        const optie = [];
         const row = rows[i];
-        const optie = opties[i];
         const kolommen = row.querySelectorAll('td');
-        optie[0] = kolommen[1].querySelector('input').value;
-        optie[1] = kolommen[2].querySelector('input').value;
+        optie.push(kolommen[1].querySelector('input').value);
+        optie.push(kolommen[2].querySelector('input').value);
+        opties.push(optie);
     }
+    return opties;
+}
+
+function save(e) {
+    e.preventDefault();
+    const opties = optieValuesFromTable();
     const state = document.getElementById('state').checked;
     STORAGE.set({[KEY_STATE]: JSON.stringify(state)}).then();
     STORAGE.set({[KEY_OPTIONS]: JSON.stringify(opties)}).then(() => {
-        showOnderregelPreview(opties, state);
+        showOnderregelPreview(opties);
         const msg = document.getElementById('saved-message');
         msg.style.display = 'inline-block';
         setTimeout(() => {
             msg.style.display = 'none';
         }, 5000)
     });
-
 }
 
-function showFast() {
-    for (let i = 0; i < opties.length; i++) {
-        const optie = opties[i];
-        const fast = document.getElementById(fastIds[i]);
-        fast.style.display = 'inline-block';
-        fast.textContent = optie[0];
-        fast.onclick = (e) => {
-            e.preventDefault();
-            open(config.teletekstPagina + optie[1], '_blank');
-        }
-    }
-    for (let span of document.querySelectorAll('.deflt')) {
-        span.style.display = 'none';
-    }
-}
-
-function showDefaults() {
-    for (let i = 0; i < fastIds.length; i++) {
-        const fast = document.getElementById(fastIds[i]);
-        fast.style.display = 'none';
-    }
-    for (let span of document.querySelectorAll('.deflt')) {
-        span.style.display = 'inline-block';
-    }
-}
-
-function showOnderregelPreview(opties, useCustom) {
-    if (!useCustom) {
-        useCustom = document.getElementById('state').checked;
-    }
-    if (useCustom) {
-        if (opties) {
-            showFast();
-        } else {
-            showDefaults();
-        }
-    } else {
-        showDefaults();
-    }
-}
-
-function handleChanges() {
+function onChangedOpties() {
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
-    const opties = [];
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         const captionInput = row.querySelector('.caption');
         const pageNrInput = row.querySelector('.pagenr');
         captionInput.oninput = () => {
-            opties[i][0] = captionInput.value;
+            const opties = optieValuesFromTable()
             showOnderregelPreview(opties);
             showLength(opties);
         }
         pageNrInput.oninput = () => {
-            opties[i][1] = pageNrInput.value;
+            const opties = optieValuesFromTable()
             showOnderregelPreview(opties);
             showLength(opties);
         }
     }
+}
+
+function handleChanges() {
+    onChangedOpties();
     document.getElementById('state').onchange = (e) => {
-        showOnderregelPreview(opties, e.target.checked);
+        showOnderregelPreview(optieValuesFromTable());
     }
 }
 
-function handleButtonClicks() {
+function useDefaultOnClick() {
     document.getElementById('cmd-use-defaults').addEventListener('click', () => {
-        // opties = optionalLinks;
         _showOpties(optionalLinks);
+        document.getElementById('state').checked = true;
         showOnderregelPreview(optionalLinks);
         showMessage('spaces');
+        showLength(optionalLinks);
     })
 }
 
 function checkState(state) {
     if (state) {
-        console.log(state)
         document.getElementById('state').checked = JSON.parse(state);
     } else {
         document.getElementById('state').checked = false;
     }
 }
 
-function fromStorage() {
-    return new Promise((resolve, reject) => {
-        const {onderregel, onderregelAan} = config.storageKey;
-        STORAGE.get([onderregel, onderregelAan], storedOpties => {
-            if (chrome.runtime.lastError) {
-                reject(chrome.runtime.lastError);
-                return;
-            }
-            resolve(storedOpties);
-        })
-    })
-}
-
 fromStorage()
     .then(results => {
-        const opties = results[KEY_OPTIONS];
-        showOpties(opties);
+        let opties = null;
+        if (results[KEY_OPTIONS]) {
+            opties = JSON.parse(results[KEY_OPTIONS]);
+            _showOpties(opties);
+        } else {
+            showMessage('defaults');
+        }
         showLength(opties);
         handleChanges();
-        handleButtonClicks();
+        useDefaultOnClick();
         checkState(results[KEY_STATE]);
         showOnderregelPreview(opties);
     })

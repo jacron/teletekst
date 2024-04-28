@@ -34,7 +34,6 @@ a {
     color: green;
 }
 #home-link {
-    float: right;
     text-decoration: none;
     display: block;
     width: 20px;
@@ -42,6 +41,8 @@ a {
     background: transparent url('../popup/view/gfx/teletekst-sprite.png?v=2013-03-19') no-repeat;
     background-position: -26px -59px;
     background-color: #777;
+    position: absolute;
+    right: 0;
 }
 #home-link:hover {
     background-color: #a5a6a9;

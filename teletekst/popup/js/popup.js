@@ -6,7 +6,7 @@ import {goBack, writeHistory} from "./history.js";
 import {config} from "../../config.js";
 import {makeExternalLinks} from "./externalLinks.js";
 import {handleKeyInput} from "./keyinput.js";
-import {adjustOnderregel, initOnderregel} from "./onderRegel.js";
+import {adjustOnderregel} from "./onderRegel.js";
 import {handleInternalLinks} from "./handleInternalLinks.js";
 
 const STORAGE = chrome.storage.local;

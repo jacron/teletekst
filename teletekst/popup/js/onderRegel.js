@@ -54,17 +54,4 @@ function adjustOnderregel(storedOpties) {
     }
 }
 
-function initOnderregel() {
-    return new Promise((resolve, reject) => {
-        const {onderregel, onderregelAan} = config.storageKey;
-        STORAGE.get([onderregel, onderregelAan], storedOpties => {
-            if (chrome.runtime.lastError) {
-                reject(chrome.runtime.lastError);
-                return;
-            }
-            resolve(storedOpties);
-        })
-    })
-}
-
-export {adjustOnderregel, initOnderregel}
+export {adjustOnderregel}

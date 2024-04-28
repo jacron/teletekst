@@ -1,8 +1,7 @@
 import {config} from "../config.js";
-import {initOnderregel} from "../popup/js/onderRegel.js";
 
-const KEY = config.storageKey.onderregel;
-const KEYSTATE = config.storageKey.onderregelAan;
+const KEY_OPTIONS = config.storageKey.onderregel;
+const KEY_STATE = config.storageKey.onderregelAan;
 const STORAGE = chrome.storage.local;
 
 const fastIds = ['fastText1', 'fastText2', 'fastText3', 'fastText4'];
@@ -13,9 +12,9 @@ const optionalLinks = [
         [' weer ', '702'],
     ]
 
-let opties;
+// let opties;
 
-function _showOpties() {
+function _showOpties(opties) {
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
     for (let i = 0; i < opties.length; i++) {
@@ -27,18 +26,25 @@ function _showOpties() {
     }
 }
 
-function showOpties(results) {
-    if (results[KEY] === undefined) {
+function showMessage(msg) {
+    if (msg === 'defaults') {
         document.getElementById('optional-defaults').style.display = 'block';
-    } else {
-        opties = JSON.parse(results[KEY]);
-    }
-    if (opties) {
-        _showOpties();
+        document.getElementById('spaces-msg').style.display = 'none';
+    } else if (msg === 'spaces') {
+        document.getElementById('optional-defaults').style.display = 'none';
+        document.getElementById('spaces-msg').style.display = 'block';
     }
 }
 
-function showLength() {
+function showOpties(opties) {
+    if (opties === undefined) {
+        showMessage('defaults');
+    } else {
+        _showOpties(JSON.parse(opties));
+    }
+}
+
+function showLength(opties) {
     let length = 0;
     if (!opties) {
         return;
@@ -59,6 +65,7 @@ function save(e) {
     e.preventDefault();
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
+    const opties = [];
     for (let i = 0; i < opties.length; i++) {
         const row = rows[i];
         const optie = opties[i];
@@ -67,9 +74,9 @@ function save(e) {
         optie[1] = kolommen[2].querySelector('input').value;
     }
     const state = document.getElementById('state').checked;
-    STORAGE.set({[KEYSTATE]: JSON.stringify(state)}).then();
-    STORAGE.set({[KEY]: JSON.stringify(opties)}).then(() => {
-        showOnderregelPreview(state);
+    STORAGE.set({[KEY_STATE]: JSON.stringify(state)}).then();
+    STORAGE.set({[KEY_OPTIONS]: JSON.stringify(opties)}).then(() => {
+        showOnderregelPreview(opties, state);
         const msg = document.getElementById('saved-message');
         msg.style.display = 'inline-block';
         setTimeout(() => {
@@ -79,83 +86,111 @@ function save(e) {
 
 }
 
-function showOnderregelPreview(useCustom) {
+function showFast() {
+    for (let i = 0; i < opties.length; i++) {
+        const optie = opties[i];
+        const fast = document.getElementById(fastIds[i]);
+        fast.style.display = 'inline-block';
+        fast.textContent = optie[0];
+        fast.onclick = (e) => {
+            e.preventDefault();
+            open(config.teletekstPagina + optie[1], '_blank');
+        }
+    }
+    for (let span of document.querySelectorAll('.deflt')) {
+        span.style.display = 'none';
+    }
+}
+
+function showDefaults() {
+    for (let i = 0; i < fastIds.length; i++) {
+        const fast = document.getElementById(fastIds[i]);
+        fast.style.display = 'none';
+    }
+    for (let span of document.querySelectorAll('.deflt')) {
+        span.style.display = 'inline-block';
+    }
+}
+
+function showOnderregelPreview(opties, useCustom) {
     if (!useCustom) {
         useCustom = document.getElementById('state').checked;
     }
     if (useCustom) {
         if (opties) {
-            for (let i = 0; i < opties.length; i++) {
-                const optie = opties[i];
-                const fast = document.getElementById(fastIds[i]);
-                fast.style.display = 'inline-block';
-                fast.textContent = optie[0];
-                fast.onclick = (e) => {
-                    e.preventDefault();
-                    open(config.teletekstPagina + optie[1], '_blank');
-                }
-            }
-            for (let span of document.querySelectorAll('.deflt')) {
-                span.style.display = 'none';
-            }
+            showFast();
+        } else {
+            showDefaults();
         }
     } else {
-        for (let i = 0; i < fastIds.length; i++) {
-            const fast = document.getElementById(fastIds[i]);
-            fast.style.display = 'none';
-        }
-        for (let span of document.querySelectorAll('.deflt')) {
-            span.style.display = 'inline-block';
-        }
+        showDefaults();
     }
 }
 
 function handleChanges() {
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
+    const opties = [];
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         const captionInput = row.querySelector('.caption');
         const pageNrInput = row.querySelector('.pagenr');
         captionInput.oninput = () => {
             opties[i][0] = captionInput.value;
-            showOnderregelPreview();
-            showLength();
+            showOnderregelPreview(opties);
+            showLength(opties);
         }
         pageNrInput.oninput = () => {
             opties[i][1] = pageNrInput.value;
-            showOnderregelPreview();
-            showLength();
+            showOnderregelPreview(opties);
+            showLength(opties);
         }
     }
     document.getElementById('state').onchange = (e) => {
-        showOnderregelPreview(e.target.checked);
+        showOnderregelPreview(opties, e.target.checked);
     }
 }
 
 function handleButtonClicks() {
     document.getElementById('cmd-use-defaults').addEventListener('click', () => {
-        opties = optionalLinks;
-        _showOpties();
-        showOnderregelPreview();
-        document.getElementById('optional-defaults').style.display = 'none';
+        // opties = optionalLinks;
+        _showOpties(optionalLinks);
+        showOnderregelPreview(optionalLinks);
+        showMessage('spaces');
     })
 }
 
-function checkState(results) {
-    if (results[KEYSTATE]) {
-        document.getElementById('state').checked = JSON.parse(results[KEYSTATE]);
+function checkState(state) {
+    if (state) {
+        console.log(state)
+        document.getElementById('state').checked = JSON.parse(state);
+    } else {
+        document.getElementById('state').checked = false;
     }
 }
 
-initOnderregel()
+function fromStorage() {
+    return new Promise((resolve, reject) => {
+        const {onderregel, onderregelAan} = config.storageKey;
+        STORAGE.get([onderregel, onderregelAan], storedOpties => {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+                return;
+            }
+            resolve(storedOpties);
+        })
+    })
+}
+
+fromStorage()
     .then(results => {
-        showOpties(results);
-        showLength();
+        const opties = results[KEY_OPTIONS];
+        showOpties(opties);
+        showLength(opties);
         handleChanges();
         handleButtonClicks();
-        checkState(results);
-        showOnderregelPreview();
+        checkState(results[KEY_STATE]);
+        showOnderregelPreview(opties);
     })
     .catch(err => console.log(err));
 

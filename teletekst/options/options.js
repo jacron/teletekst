@@ -56,10 +56,13 @@ function save(e) {
     STORAGE.set({[KEY_STATE]: JSON.stringify(state)}).then();
     STORAGE.set({[KEY_OPTIONS]: JSON.stringify(opties)}).then(() => {
         showOnderregelPreview(opties);
-        const msg = document.getElementById('saved-message');
-        msg.style.display = 'inline-block';
+        const savedMsg = document.getElementById('saved-message');
+        const lengthMsg = document.getElementById('lengte-message');
+        savedMsg.style.display = 'inline-block';
+        lengthMsg.style.display = 'none';
         setTimeout(() => {
-            msg.style.display = 'none';
+            savedMsg.style.display = 'none';
+            lengthMsg.style.display = 'inline-block';
         }, 5000)
     });
 }

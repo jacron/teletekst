@@ -63,13 +63,6 @@ function showMessage(visible) {
         visible? 'block' : 'none';
 }
 
-function showHelp() {
-    const helpMsg = document.getElementById('help');
-    const f1 = document.getElementById('fastText1Red');
-    f1.onmouseover = () => helpMsg.style.display = 'block';
-    // f1.onmouseleave = () => helpMsg.style.display = 'none';
-}
-
 function init(url) {
     showMessage(true);
     writeHistory(url);
@@ -78,7 +71,6 @@ function init(url) {
         .then(text => {
             inject(text);
             showMessage(false);
-            showHelp();
         })
         .catch(err => console.error(err));
 }

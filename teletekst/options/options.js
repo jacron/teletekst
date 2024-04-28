@@ -34,23 +34,6 @@ function showMessage(msg) {
     }
 }
 
-function showLength(opties) {
-    let length = 0;
-    if (!opties) {
-        return;
-    }
-    for (let optie of opties) {
-        length += optie[0].length;
-    }
-    const totalLength = document.getElementById('totalLength');
-    totalLength.textContent = length.toString();
-    if (length === 41) {
-        totalLength.classList.remove('red');
-    } else {
-        totalLength.classList.add('red');
-    }
-}
-
 function optieValuesFromTable() {
     const optiesTable = document.getElementById('onderregelOpties');
     const rows = optiesTable.querySelectorAll('tr');
@@ -91,19 +74,17 @@ function onChangedOpties() {
         captionInput.oninput = () => {
             const opties = optieValuesFromTable()
             showOnderregelPreview(opties);
-            showLength(opties);
         }
         pageNrInput.oninput = () => {
             const opties = optieValuesFromTable()
             showOnderregelPreview(opties);
-            showLength(opties);
         }
     }
 }
 
 function handleChanges() {
     onChangedOpties();
-    document.getElementById('state').onchange = (e) => {
+    document.getElementById('state').onchange = () => {
         showOnderregelPreview(optieValuesFromTable());
     }
 }
@@ -114,7 +95,6 @@ function useDefaultOnClick() {
         document.getElementById('state').checked = true;
         showOnderregelPreview(optionalLinks);
         showMessage('spaces');
-        showLength(optionalLinks);
     })
 }
 
@@ -129,13 +109,13 @@ function checkState(state) {
 fromStorage()
     .then(results => {
         let opties = null;
-        if (results[KEY_OPTIONS]) {
-            opties = JSON.parse(results[KEY_OPTIONS]);
+        const key_options = results[KEY_OPTIONS];
+        if (key_options) {
+            opties = JSON.parse(key_options);
             _showOpties(opties);
         } else {
             showMessage('defaults');
         }
-        showLength(opties);
         handleChanges();
         useDefaultOnClick();
         checkState(results[KEY_STATE]);

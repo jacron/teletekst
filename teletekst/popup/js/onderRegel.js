@@ -36,7 +36,7 @@ function customizeOnderregel(opties) {
 }
 
 function _adjustOnderregel(opties, state) {
-    if (state && opties) {
+    if (JSON.parse(state) === true && opties) {
         if (!document.getElementById(fKeyBindings[0][1])) {
             injectOnderregel();
         }
@@ -95,6 +95,23 @@ function showDefaults() {
     }
 }
 
+function showLength(opties) {
+    let length = 0;
+    if (!opties) {
+        return;
+    }
+    for (let optie of opties) {
+        length += optie[0].length;
+    }
+    const totalLength = document.getElementById('totalLength');
+    totalLength.textContent = length.toString();
+    if (length === 41) {
+        totalLength.classList.remove('red');
+    } else {
+        totalLength.classList.add('red');
+    }
+}
+
 function showOnderregelPreview(opties) {
     if (document.getElementById('state').checked) {
         if (opties) {
@@ -105,6 +122,7 @@ function showOnderregelPreview(opties) {
     } else {
         showDefaults();
     }
+    showLength(opties);
 }
 
 export {adjustOnderregel, fromStorage, showOnderregelPreview}

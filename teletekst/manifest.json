@@ -1,7 +1,7 @@
 {
   "name": "TeletekstView",
-  "description": "popup view op Teletekst",
-  "version": "3.0",
+  "description": "Popup view op Teletekst",
+  "version": "3.1",
   "author": "Jan H Croonen",
   "permissions": [
     "storage"

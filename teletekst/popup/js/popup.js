@@ -9,6 +9,12 @@ const cssSidePanel = `
     font-size: 14px;
     margin-left: -10px;
 }
+#container #content {
+    height: 460px;
+}
+#container2 #content {
+    height: unset;
+}
 .tt-btn {
     font-size: 12px;
 }
@@ -17,8 +23,7 @@ const cssSidePanel = `
     transform: scale(.76);
     margin-left: -54px;
 }
-#help,
-.font-control {
+#help {
     display: none;
 }
 #message {
@@ -32,6 +37,9 @@ const cssSidePanel = `
 #container2 #content span:nth-last-child(4)
   {
     display: none;
+}
+#container2 #content {
+    line-height: 1.3;
 }
 `;
 

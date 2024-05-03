@@ -45,6 +45,9 @@ a.external-link:hover {
 #help {
     text-decoration: none;
 }
+.font-control {
+    display: none;
+}
 #help:hover {
     background: #a5a6a9;
     color: #dfe2e7;

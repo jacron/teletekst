@@ -3,6 +3,7 @@ import {handleKeyInput} from "./keyinput.js";
 import {fetchPage} from "./fetchPage.js";
 import {openPopup2} from "../../lib/popup2.js";
 import {getMyType, myTypes} from "./search.js";
+import {fromStorage} from "./onderRegel.js";
 
 const cssSidePanel = `
 #container,
@@ -35,7 +36,7 @@ const cssSidePanel = `
 }
 `;
 
-function messageListener(req, sender, sendResponse) {
+function messageListener(req) {
     if (req.message === 'close-panel') {
         window.close();
     }
@@ -68,7 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     toPopup2();
     /* STARTPUNT */
-    fetchPage(config.teletekstStart, 'container');
+    fromStorage().then(results => {
+        const start = results[config.storageKey.start];
+        const startPage = start? config.teletekstPagina + JSON.parse(start) : config.teletekstStart;
+        fetchPage(startPage, 'container');
+    })
 });
 
 chrome.runtime.onMessage.addListener(messageListener);

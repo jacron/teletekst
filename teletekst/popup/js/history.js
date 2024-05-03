@@ -11,7 +11,11 @@ function urlWithUnescapedPage(page) {
 
 function escapedPageFromUrl(url) {
     const p = url.split('?p=');
-    return p[1].replace(/-/g, '_');
+    if (p.length > 1) {
+        return p[1].replace(/-/g, '_');
+    } else {
+        return '';
+    }
 }
 
 function goBack() {

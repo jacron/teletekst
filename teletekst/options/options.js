@@ -3,6 +3,7 @@ import {fromStorage, showOnderregelPreview} from "../popup/js/onderRegel.js";
 
 const KEY_OPTIONS = config.storageKey.onderregel;
 const KEY_STATE = config.storageKey.onderregelAan;
+const KEY_START = config.storageKey.start;
 const STORAGE = chrome.storage.local;
 
 const optionalLinks = [
@@ -53,7 +54,9 @@ function save(e) {
     e.preventDefault();
     const opties = optieValuesFromTable();
     const state = document.getElementById('state').checked;
+    const start = document.getElementById('beginpagina').value;
     STORAGE.set({[KEY_STATE]: JSON.stringify(state)}).then();
+    STORAGE.set({[KEY_START]: JSON.stringify(start)}).then();
     STORAGE.set({[KEY_OPTIONS]: JSON.stringify(opties)}).then(() => {
         showOnderregelPreview(opties);
         const savedMsg = document.getElementById('saved-message');
@@ -109,6 +112,10 @@ function checkState(state) {
     }
 }
 
+function startPage(pagenr) {
+    document.getElementById('beginpagina').value = JSON.parse(pagenr);
+}
+
 fromStorage()
     .then(results => {
         let opties = null;
@@ -123,6 +130,7 @@ fromStorage()
         useDefaultOnClick();
         checkState(results[KEY_STATE]);
         showOnderregelPreview(opties);
+        startPage(results[KEY_START]);
     })
     .catch(err => console.log(err));
 

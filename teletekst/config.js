@@ -10,6 +10,7 @@ export const config = {
     storageKey: {
         history: 'history',
         onderregel: 'onderregel',
-        onderregelAan: 'onderregelAan'
+        onderregelAan: 'onderregelAan',
+        start: 'start'
     },
 }

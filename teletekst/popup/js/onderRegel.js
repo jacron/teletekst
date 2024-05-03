@@ -57,13 +57,13 @@ function adjustOnderregel(storedOpties) {
 
 function fromStorage() {
     return new Promise((resolve, reject) => {
-        const {onderregel, onderregelAan} = config.storageKey;
-        STORAGE.get([onderregel, onderregelAan], storedOpties => {
+        const {onderregel, onderregelAan, start} = config.storageKey;
+        STORAGE.get([onderregel, onderregelAan, start], results => {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
                 return;
             }
-            resolve(storedOpties);
+            resolve(results);
         })
     })
 }

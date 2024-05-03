@@ -70,7 +70,7 @@ function fetchPage(url, containerId) {
         })
         .catch(err => {
             console.error(err)
-            showMessageLoading(true, 'Laden is mislukt, laad opnieuw')
+            // showMessageLoading(false)
         });
 }
 

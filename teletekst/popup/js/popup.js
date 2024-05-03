@@ -43,6 +43,12 @@ const cssSidePanel = `
 }
 `;
 
+function messageListener(req, sender, sendResponse) {
+    if (req.message === 'close-panel') {
+        window.close();
+    }
+}
+
 function injectSidePanelStyle() {
     const style = document.createElement('style');
     style.innerHTML = cssSidePanel;
@@ -60,3 +66,5 @@ document.addEventListener('DOMContentLoaded', () => {
     /* STARTPUNT */
     fetchPage(config.teletekstStart, 'container');
 });
+
+chrome.runtime.onMessage.addListener(messageListener);

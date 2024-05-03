@@ -4,10 +4,18 @@ function openSidePanel() {
     })
 }
 
+function closeSidePanel() {
+    chrome.runtime.sendMessage({message: 'close-panel'}).then()
+        .catch(err => console.error(err.message))
+}
+
 function commandListener(command) {
     switch (command) {
         case 'open-side-panel':
             openSidePanel();
+            break;
+        case 'close-side-panel':
+            closeSidePanel();
             break;
     }
 }

@@ -37,6 +37,13 @@
         "mac": "Shift+MacCtrl+T"
       },
       "description": "Open de extensie"
+    },
+    "close-side-panel": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+V",
+        "mac": "Shift+MacCtrl+V"
+      },
+      "description": "Open de extensie"
     }
   },
   "manifest_version": 3

@@ -1,3 +1,6 @@
+import {fetchPage} from "./fetchPage.js";
+import {config} from "../../config.js";
+
 const newsLines = {
     lines: [],
     index: -1
@@ -49,6 +52,28 @@ function navigateLast() {
     if (newsLines.index !== newsLines.lines.length - 1) {
         clearActivations();
         activateLast();
+    }
+}
+
+function fetchNewsPage(e) {
+    const activeSpan = newsLines.lines[newsLines.index];
+    const a = getAnchor(activeSpan);
+    const url = config.teletekstHome + a.getAttribute('href');
+    fetchPage(url, 'container2');
+    e.preventDefault();
+}
+
+function openNewsPage(e) {
+    // if (document.getElementById('navi').value.length === 0) {
+    //     /* this is a fix to navigating to an empty number */
+    //     e.preventDefault();
+    // }
+    if (newsLines.index !== -1) {
+        if (document.location.search.length === 0) {
+            fetchNewsPage(e)
+        } else {
+            navigateNewspage();
+        }
     }
 }
 
@@ -107,4 +132,4 @@ function nextLine() {
 }
 
 export {initNewsLines, prevLine, nextLine, navigateFirst, navigateLast, navigateInto,
-prepareNavigationList}
+openNewsPage, prepareNavigationList}

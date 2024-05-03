@@ -5,7 +5,7 @@ function externalAnchorString(url) {
 
 function makeOneExternalLink(span, url) {
     let html = span.innerHTML;
-    if (html.indexOf(url) !== -1) {
+    if (html.indexOf(url) !== -1 && html.indexOf('<a ') === -1) {
         span.innerHTML = html.replace(url, externalAnchorString(url));
     }
 }

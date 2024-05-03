@@ -1,6 +1,8 @@
 import {goBack} from "./history.js";
-import {navigateFirst,
-    navigateInto, navigateLast, nextLine, prevLine} from "./newsLines.js";
+import {
+    navigateFirst,
+    navigateInto, navigateLast, nextLine, openNewsPage, prevLine
+} from "./newsLines.js";
 import {config} from "../../config.js";
 
 function followLinks(e, resolve) {
@@ -40,7 +42,8 @@ function followLinks(e, resolve) {
             break;
         case ' ':
         case 'Enter':
-            navigateInto(e);
+            // navigateInto(e);
+            openNewsPage(e);
             break;
     }
     if (link) {

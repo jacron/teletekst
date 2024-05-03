@@ -22,7 +22,7 @@ function handleSubmit() {
 function handleBack() {
     const backButton = document.querySelector('#navigatie .back');
     backButton.addEventListener('click', e => {
-        goBack().then(url => init(url));
+        goBack().then(url => fetchPage(url, 'container'));
         e.preventDefault();
     })
 }
@@ -46,9 +46,12 @@ function inject(text, containerId) {
     }
 }
 
-function showMessageLoading(visible) {
-    document.getElementById('message').style.display =
-        visible? 'block' : 'none';
+function showMessageLoading(visible, msg) {
+    const message = document.getElementById('message');
+    if (msg) {
+        message.textContent = msg;
+    }
+    message.style.display = visible? 'block' : 'none';
 }
 
 function queryAgainstCaching() {
@@ -65,7 +68,10 @@ function fetchPage(url, containerId) {
             inject(text, containerId);
             showMessageLoading(false);
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            console.error(err)
+            showMessageLoading(true, 'Laden is mislukt, laad opnieuw')
+        });
 }
 
 export {fetchPage}

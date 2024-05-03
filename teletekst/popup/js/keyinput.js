@@ -1,9 +1,10 @@
 import {goBack} from "./history.js";
 import {
     navigateFirst,
-    navigateInto, navigateLast, nextLine, openNewsPage, prevLine
+    navigateLast, nextLine, openNewsPage, prevLine
 } from "./newsLines.js";
 import {config} from "../../config.js";
+import {openPopup2} from "../../lib/popup2.js";
 
 function followLinks(e, resolve) {
     const btns_pager = document.querySelectorAll('a[data-pager]');
@@ -40,11 +41,18 @@ function followLinks(e, resolve) {
             e.preventDefault();
             navigateLast();
             break;
+        case 'F5':
+            openPopup2();
+            window.close();
+            break
         case ' ':
         case 'Enter':
             // navigateInto(e);
             openNewsPage(e);
             break;
+        case 'Escape':
+            window.close();
+            break
     }
     if (link) {
         const url = link.getAttribute('href'); // attribuut is niet geprefixed, zoals .href wel

@@ -11,7 +11,8 @@
     "https://teletekst-data.nos.nl/*"
   ],
   "background": {
-    "service_worker": "service_worker.js"
+    "service_worker": "service_worker.js",
+    "type": "module"
   },
   "icons" : {
     "128": "images/teletekst2 128.png",

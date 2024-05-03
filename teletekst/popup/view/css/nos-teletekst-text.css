@@ -16,7 +16,7 @@ body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 1.2em;
     color: #fff;
-    width: 25em;
+    /*width: 25em;*/
     margin: 0 0 1.6em 1em; /* customized */
 }
 

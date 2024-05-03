@@ -1,6 +1,8 @@
 import {config} from "../../config.js";
 import {handleKeyInput} from "./keyinput.js";
 import {fetchPage} from "./fetchPage.js";
+import {openPopup2} from "../../lib/popup2.js";
+import {getMyType, myTypes} from "./search.js";
 
 const cssSidePanel = `
 #container,
@@ -9,11 +11,12 @@ const cssSidePanel = `
     font-size: 14px;
     margin-left: -10px;
 }
+#container2 {
+    margin-left: unset;
+}
 #container #content {
     height: 460px;
-}
-#container2 #content {
-    height: unset;
+    width: 34em;
 }
 .tt-btn {
     font-size: 12px;
@@ -30,17 +33,6 @@ const cssSidePanel = `
     top: 34px;
     left: 8px;
 }
-#container2 .tt-paginatie,
-#container2 #content span:nth-last-child(1),
-#container2 #content span:nth-last-child(2),
-#container2 #content span:nth-last-child(3),
-#container2 #content span:nth-last-child(4)
-  {
-    display: none;
-}
-#container2 #content {
-    line-height: 1.3;
-}
 `;
 
 function messageListener(req, sender, sendResponse) {
@@ -55,6 +47,17 @@ function injectSidePanelStyle() {
     document.head.appendChild(style);
 }
 
+function toPopup2() {
+    const btn = document.getElementById('popup2');
+    btn.addEventListener('click', () => {
+        openPopup2();
+        window.close();
+    })
+    if (getMyType() === myTypes.POPUP2) {
+        document.getElementById('popup2').style.display = 'none';
+    }
+}
+
 document.onkeydown = function (event) {
     handleKeyInput(event).then(url => fetchPage(url, 'container'));
 };
@@ -63,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.location.search.length === 0) {
         injectSidePanelStyle()
     }
+    toPopup2();
     /* STARTPUNT */
     fetchPage(config.teletekstStart, 'container');
 });

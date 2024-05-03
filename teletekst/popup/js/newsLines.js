@@ -1,5 +1,6 @@
 import {fetchPage} from "./fetchPage.js";
 import {config} from "../../config.js";
+import {getMyType, myTypes} from "./search.js";
 
 const newsLines = {
     lines: [],
@@ -69,21 +70,17 @@ function openNewsPage(e) {
     //     e.preventDefault();
     // }
     if (newsLines.index !== -1) {
-        if (document.location.search.length === 0) {
-            fetchNewsPage(e)
-        } else {
-            navigateNewspage();
+        switch (getMyType()) {
+            case myTypes.POPUP1:
+                navigateNewspage();
+                break;
+            case myTypes.POPUP2:
+                fetchNewsPage(e)
+                break;
+            case myTypes.SIDE_PANE:
+                fetchNewsPage(e)
+                break;
         }
-    }
-}
-
-function navigateInto(e) {
-    if (document.getElementById('navi').value.length === 0) {
-        /* this is a fix to navigating to an empty number */
-        e.preventDefault();
-    }
-    if (newsLines.index !== -1) {
-        navigateNewspage();
     }
 }
 
@@ -120,7 +117,7 @@ function prevLine() {
     }
 }
 
-/* navigate on ArroDown */
+/* navigate on ArrowDown */
 function nextLine() {
     if (newsLines.index === -1) {
         activateFirst();
@@ -131,5 +128,5 @@ function nextLine() {
     }
 }
 
-export {initNewsLines, prevLine, nextLine, navigateFirst, navigateLast, navigateInto,
-openNewsPage, prepareNavigationList}
+export {initNewsLines, prevLine, nextLine, navigateFirst,
+    navigateLast, openNewsPage, prepareNavigationList}

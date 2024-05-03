@@ -1,0 +1,14 @@
+#container {
+    padding: 0 8px;
+    font-size: 14px;
+    /*    18px for popup*/
+}
+.tt-btn {
+    font-size: 12px;
+    /*    oorspr 14 px*/
+}
+.tt-paginatie {
+    height: 26px;
+    transform: scale(.8);
+    margin-left: -46px;
+}

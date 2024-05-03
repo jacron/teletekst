@@ -4,11 +4,15 @@
   "version": "3.1",
   "author": "Jan H Croonen",
   "permissions": [
-    "storage"
+    "storage",
+    "sidePanel"
   ],
   "host_permissions": [
     "https://teletekst-data.nos.nl/*"
   ],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
   "icons" : {
     "128": "images/teletekst2 128.png",
     "48": "images/teletekst2 48.png",
@@ -16,15 +20,18 @@
   },
   "action": {
     "default_icon": "images/teletekst2 16.png",
-    "default_title": "Teletekst",
-    "default_popup": "popup/view/popup.html"
+    "default_popup": "popup/view/popup.html?popup",
+    "default_title": "Teletekst"
   },
   "options_ui": {
     "page": "options/options.html"
   },
+  "side_panel": {
+    "default_path": "popup/view/popup.html"
+  },
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgGbrkBOcVEOJ9ePoYbfG9g1IvnaORw9eppw7CYoMda1r63/mbAacJe6SK/wOt0ccl97aBZYl+6wKlvapEaiBUaiFjW3VYF07F5CY3tMguLJxR0tvUuBf1/sZDIrUsssLySA280lKnmGQ/h8nf8VRYu7oVVVXON/HgP+isoiTJ0MwkSFba/17K4OpiKPOC728HDCPt4LgCo1AiyKZHl3xyqVX1WSVMrmdoF372SDQ0BFXAt3qnZ5PfcMtY4TNUi7VhQCKKbV8BvJ7t46Hfm/O1ftvyBdJ5zRAE9yugnEouOuJguIm4pYUiTkFiTNfJclPZVBZ3r5cOFQJvFOexHZqSQIDAQAB",
   "commands": {
-    "_execute_action": {
+    "open-side-panel": {
       "suggested_key": {
         "default": "Ctrl+Shift+T",
         "mac": "Shift+MacCtrl+T"

@@ -35,7 +35,7 @@ function goBack() {
     })
 }
 
-function getHistory(url, value) {
+function writeUrlToHistory(url, value) {
     const page = escapedPageFromUrl(url);
     let history;
     if (value) {
@@ -50,8 +50,8 @@ function getHistory(url, value) {
 function writeHistory(url) {
     STORAGE.get(KEY)
         .then(results => {
-            const history = getHistory(url, results[KEY]);
-            STORAGE.set({[KEY]: JSON.stringify(history)}).then();
+            const newHistory = writeUrlToHistory(url, results[KEY]);
+            STORAGE.set({[KEY]: JSON.stringify(newHistory)}).then();
         })
 }
 

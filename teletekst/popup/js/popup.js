@@ -9,6 +9,25 @@ import {handleKeyInput} from "./keyinput.js";
 import {adjustOnderregel, fromStorage} from "./onderRegel.js";
 import {handleInternalLinks} from "./handleInternalLinks.js";
 
+const cssSidePanel = `
+#container {
+    padding: 0 8px;
+    font-size: 14px;
+    margin-left: -10px;
+}
+.tt-btn {
+    font-size: 12px;
+}
+.tt-paginatie {
+    height: 26px;
+    transform: scale(.76);
+    margin-left: -54px;
+}
+#help {
+    display: none;
+}
+`;
+
 function hideControls() {
     document.querySelector('.font-control').style.display = 'none';
 }
@@ -58,24 +77,33 @@ function inject(text) {
     })
 }
 
-function showMessage(visible) {
+function showMessageLoading(visible) {
     document.getElementById('message').style.display =
         visible? 'block' : 'none';
 }
 
 function init(url) {
-    showMessage(true);
+    showMessageLoading(true);
     writeHistory(url);
     fetch(url + queryAgainstCaching(), {mode: 'no-cors'})
         .then(res => res.text())
         .then(text => {
             inject(text);
-            showMessage(false);
+            showMessageLoading(false);
         })
         .catch(err => console.error(err));
 }
 
+function injectSidePanelStyle() {
+    const style = document.createElement('style');
+    style.innerHTML = cssSidePanel;
+    document.head.appendChild(style);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    if (document.location.search.length === 0) {
+        injectSidePanelStyle()
+    }
     init(config.teletekstStart);
 });
 document.onkeydown = function (event) {

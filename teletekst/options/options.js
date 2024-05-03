@@ -116,6 +116,13 @@ function startPage(pagenr) {
     document.getElementById('beginpagina').value = JSON.parse(pagenr);
 }
 
+function addSearch() {
+    const homeLink = document.getElementById('home-link');
+    const search = document.location.search;
+    console.log(search)
+    homeLink.setAttribute('href', homeLink.getAttribute('href') + search);
+}
+
 fromStorage()
     .then(results => {
         let opties = null;
@@ -131,6 +138,7 @@ fromStorage()
         checkState(results[KEY_STATE]);
         showOnderregelPreview(opties);
         startPage(results[KEY_START]);
+        // addSearch();
     })
     .catch(err => console.log(err));
 

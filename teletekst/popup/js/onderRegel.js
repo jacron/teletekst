@@ -69,7 +69,6 @@ function fromStorage() {
 }
 
 function showFast(opties) {
-    console.log(opties.length)
     for (let i = 0; i < opties.length; i++) {
         const optie = opties[i];
         const fast = document.getElementById(fastIds[i]);

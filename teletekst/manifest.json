@@ -32,17 +32,10 @@
   },
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgGbrkBOcVEOJ9ePoYbfG9g1IvnaORw9eppw7CYoMda1r63/mbAacJe6SK/wOt0ccl97aBZYl+6wKlvapEaiBUaiFjW3VYF07F5CY3tMguLJxR0tvUuBf1/sZDIrUsssLySA280lKnmGQ/h8nf8VRYu7oVVVXON/HgP+isoiTJ0MwkSFba/17K4OpiKPOC728HDCPt4LgCo1AiyKZHl3xyqVX1WSVMrmdoF372SDQ0BFXAt3qnZ5PfcMtY4TNUi7VhQCKKbV8BvJ7t46Hfm/O1ftvyBdJ5zRAE9yugnEouOuJguIm4pYUiTkFiTNfJclPZVBZ3r5cOFQJvFOexHZqSQIDAQAB",
   "commands": {
-    "open-side-panel": {
+    "open-panel": {
       "suggested_key": {
         "default": "Ctrl+Shift+T",
         "mac": "Shift+MacCtrl+T"
-      },
-      "description": "Open de extensie"
-    },
-    "close-side-panel": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+V",
-        "mac": "Shift+MacCtrl+V"
       },
       "description": "Open de extensie"
     }

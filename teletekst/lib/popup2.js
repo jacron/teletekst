@@ -14,7 +14,6 @@ function resetIds(windowId) {
     if (windowId === winId) {
         winId = null;
         tabId = null;
-        // console.log('the popup closed');
     }
 }
 

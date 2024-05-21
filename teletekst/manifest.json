@@ -4,8 +4,7 @@
   "version": "3.1",
   "author": "Jan H Croonen",
   "permissions": [
-    "storage",
-    "sidePanel"
+    "storage"
   ],
   "host_permissions": [
     "https://teletekst-data.nos.nl/*"
@@ -26,9 +25,6 @@
   },
   "options_ui": {
     "page": "options/options.html"
-  },
-  "side_panel": {
-    "default_path": "popup/view/popup.html"
   },
   "commands": {
     "open-panel": {

@@ -65,19 +65,12 @@ function fetchNewsPage(e) {
 }
 
 function openNewsPage(e) {
-    // if (document.getElementById('navi').value.length === 0) {
-    //     /* this is a fix to navigating to an empty number */
-    //     e.preventDefault();
-    // }
     if (newsLines.index !== -1) {
         switch (getMyType()) {
             case myTypes.POPUP1:
                 navigateNewspage();
                 break;
             case myTypes.POPUP2:
-                fetchNewsPage(e)
-                break;
-            case myTypes.SIDE_PANE:
                 fetchNewsPage(e)
                 break;
         }

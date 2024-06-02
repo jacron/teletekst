@@ -1,7 +1,7 @@
 import {config} from "../../config.js";
 import {handleKeyInput} from "./keyinput.js";
 import {fetchPage} from "./fetchPage.js";
-import {openPopup2} from "../../lib/popup2.js";
+import {openPopup2} from "../../lib/openpopup2.js";
 import {getMyType, myTypes} from "./search.js";
 import {fromStorage} from "./onderRegel.js";
 

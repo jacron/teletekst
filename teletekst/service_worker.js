@@ -1,4 +1,4 @@
-import {activatePopup2, resetIds} from "./lib/popup2.js";
+import {activatePopup2, resetIds} from "./lib/openpopup2.js";
 
 function commandListener(command) {
     switch (command) {

@@ -4,7 +4,7 @@ import {
     navigateLast, nextLine, openNewsPage, prevLine
 } from "./newsLines.js";
 import {config} from "../../config.js";
-import {openPopup2} from "../../lib/popup2.js";
+import {openPopup2} from "../../lib/openpopup2.js";
 
 function followLinks(e, resolve) {
     const btns_pager = document.querySelectorAll('a[data-pager]');

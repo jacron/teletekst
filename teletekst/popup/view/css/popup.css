@@ -69,7 +69,9 @@ a.external-link:hover {
 {
     display: none;
 }
-#container2 #content {
+/*#container2 */
+#container2 #content,
+#container.popup2 #content {
     line-height: 1.3;
 }
 #container2 #content {

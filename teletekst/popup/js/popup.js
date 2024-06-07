@@ -19,7 +19,10 @@ function toPopup2() {
     })
     if (getMyType() === myTypes.POPUP2) {
         document.getElementById('popup2').style.display = 'none';
-        document.getElementById('container').classList.add('popup2');
+        const container = document.getElementById('container');
+        if (container) {
+            container.classList.add('popup2');
+        }
     }
 }
 

@@ -31,8 +31,18 @@ function inject(text, containerId) {
     const parser = new DOMParser();
     const HTMLDocument = parser.parseFromString(text, 'text/html');
     const container = document.getElementById(containerId);
-    container.innerHTML = HTMLDocument.body.innerHTML;
-    if (containerId !== 'container2') {
+    if (containerId === 'container2') {
+        const title = HTMLDocument.body.querySelector('.yellow.bg-blue').cloneNode(true);
+        title.classList.add('pretitle');
+        // title.classList.remove('bg-blue');
+        container.innerHTML = '';
+        container.appendChild(title);
+        setTimeout(() => {
+            container.innerHTML = HTMLDocument.body.innerHTML;
+            container.appendChild(title);
+        }, 500);
+    } else {
+        container.innerHTML = HTMLDocument.body.innerHTML;
         fromStorage().then(storedOpties => {
                 initNewsLines();
                 adjustOnderregel(storedOpties);

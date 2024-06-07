@@ -18,7 +18,9 @@ function getAnchor(newsline) {
     if (!a) {
         /* p 101 bevat anchor in volgende (sibling) span */
         const nextSpan = newsline.nextElementSibling;
-        a = nextSpan.querySelector('a');
+        if (nextSpan) {
+            a = nextSpan.querySelector('a');
+        }
     }
     return a;
 }

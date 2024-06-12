@@ -32,15 +32,21 @@ function inject(text, containerId) {
     const HTMLDocument = parser.parseFromString(text, 'text/html');
     const container = document.getElementById(containerId);
     if (containerId === 'container2') {
-        const title = HTMLDocument.body.querySelector('.yellow.bg-blue').cloneNode(true);
-        title.classList.add('pretitle');
-        // title.classList.remove('bg-blue');
-        container.innerHTML = '';
-        container.appendChild(title);
-        setTimeout(() => {
-            container.innerHTML = HTMLDocument.body.innerHTML;
+        const titleLine = HTMLDocument.body.querySelector('.yellow.bg-blue');
+        if (titleLine) {
+            const title = titleLine.cloneNode(true);
+            title.classList.add('pretitle');
+            container.innerHTML = '';
             container.appendChild(title);
-        }, 500);
+            setTimeout(() => {
+                container.innerHTML = HTMLDocument.body.innerHTML;
+            }, 300);
+        } else { /* not found heeft geen title regel */
+            container.innerHTML = '';
+            setTimeout(() => {
+                container.innerHTML = HTMLDocument.body.innerHTML;
+            }, 100)
+        }
     } else {
         container.innerHTML = HTMLDocument.body.innerHTML;
         fromStorage().then(storedOpties => {

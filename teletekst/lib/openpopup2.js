@@ -17,7 +17,13 @@ function resetIds(windowId) {
     }
 }
 
+function calcCenteredLeft() {
+    const outerWindowWidth = 1100;
+    return(screen.width / 2 - (outerWindowWidth / 2));
+}
+
 function openPopup2() {
+    createData.left = calcCenteredLeft();
     chrome.windows.create(createData, win => {
         tabId = win.tabs[0].id;
         winId = win.id;

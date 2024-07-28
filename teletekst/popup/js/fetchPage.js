@@ -30,7 +30,10 @@ function handleBack() {
 function tidyDots(container) {
     const spans = container.querySelectorAll('span');
     for (const span of spans) {
-        span.innerText = span.innerText.replace(".", ". ");
+        span.innerText = span.innerText
+            .replace(/\./g, ". ")
+            .replace(/,/g, ', ')
+            .replace(/. 00/g, '.00');
     }
 }
 

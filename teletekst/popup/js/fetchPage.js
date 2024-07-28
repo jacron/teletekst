@@ -27,6 +27,13 @@ function handleBack() {
     })
 }
 
+function tidyDots(container) {
+    const spans = container.querySelectorAll('span');
+    for (const span of spans) {
+        span.innerText = span.innerText.replace(".", ". ");
+    }
+}
+
 function inject(text, containerId) {
     const parser = new DOMParser();
     const HTMLDocument = parser.parseFromString(text, 'text/html');
@@ -40,6 +47,7 @@ function inject(text, containerId) {
             container.appendChild(title);
             setTimeout(() => {
                 container.innerHTML = HTMLDocument.body.innerHTML;
+                tidyDots(container);
             }, 300);
         } else { /* not found heeft geen title regel */
             container.innerHTML = '';

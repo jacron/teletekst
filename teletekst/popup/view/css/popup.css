@@ -5,6 +5,7 @@
 #container {
     padding: 0 8px;
     font-size: 18px;
+    min-width: 400px;
 }
 #content {
     /* fix tegen scrollen cq overbodige verticale scroll bar */

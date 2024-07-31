@@ -31,9 +31,8 @@ function tidyDots(container) {
     const spans = container.querySelectorAll('span');
     for (const span of spans) {
         span.innerText = span.innerText
-            .replace(/\./g, ". ")
-            .replace(/,/g, ', ')
-            .replace(/. 00/g, '.00');
+            .replace(/([.,])(?!\d)/g, '$1 ')
+            .replace(/\. com/g, '.com');
     }
 }
 

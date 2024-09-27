@@ -20,7 +20,6 @@
   },
   "action": {
     "default_icon": "images/teletekst2 16.png",
-    "default_popup": "popup/view/popup.html?popup",
     "default_title": "Teletekst"
   },
   "options_ui": {

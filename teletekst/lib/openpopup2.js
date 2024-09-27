@@ -18,8 +18,12 @@ function resetIds(windowId) {
 }
 
 function calcCenteredLeft() {
-    const outerWindowWidth = 1100;
-    return(screen.width / 2 - (outerWindowWidth / 2));
+    if (typeof(screen) !== 'undefined') {
+        const outerWindowWidth = 1100;
+        return (screen.width / 2 - (outerWindowWidth / 2));
+    } else {
+        return 100;
+    }
 }
 
 function openPopup2() {

@@ -41,3 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 chrome.runtime.onMessage.addListener(messageListener);
+
+function calcCenteredLeft() {
+    const outerWindowWidth = 1100;
+    return (screen.width / 2 - (outerWindowWidth / 2));
+}
+
+const left = calcCenteredLeft()
+window.moveTo(left, 0)
+
+setTimeout(() => {
+    const ttInput = document.querySelector('.tt-input');
+    ttInput.onkeydown = e => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault()
+        }
+    }
+
+}, 500)

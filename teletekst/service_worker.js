@@ -14,7 +14,7 @@ function windowRemovedListener(windowId) {
 
 /**
  * Deze regel in manifest zou actionClick overrulen:
- "default_popup": "popup/view/popup.html?popup",
+ "action": { "default_popup": "popup/view/popup.html?popup",
  *
  */
 function actionClickedListener() {

@@ -30,9 +30,11 @@ function handleBack() {
 function tidyDots(container) {
     const spans = container.querySelectorAll('span');
     for (const span of spans) {
-        span.innerText = span.innerText
-            .replace(/([.,])(?!\d)/g, '$1 ')
-            .replace(/\. com/g, '.com');
+        if (!/\b\d+\b$/.test(span.innerText)) {
+            span.innerText = span.innerText
+                .replace(/([.,])(?!\d)/g, '$1 ')
+                .replace(/\. com/g, '.com');
+        }
     }
 }
 
@@ -59,6 +61,7 @@ function inject(text, containerId) {
         }
     } else {
         container.innerHTML = HTMLDocument.body.innerHTML;
+        // tidyDots(container);
         fromStorage().then(storedOpties => {
                 initNewsLines();
                 adjustOnderregel(storedOpties);
@@ -67,7 +70,8 @@ function inject(text, containerId) {
                 prepareNavigationList();
                 handleSubmit();
                 handleBack();
-                document.getElementById('navi').focus();
+            document.getElementById('navi').focus();
+            document.getElementById('navi').setAttribute('autocomplete', 'off');
         })
     }
 }
